@@ -28,32 +28,55 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lb = new System.Windows.Forms.Label();
+            DevExpress.XtraCharts.SideBySideBarSeriesLabel sideBySideBarSeriesLabel2 = new DevExpress.XtraCharts.SideBySideBarSeriesLabel();
+            this.chartControl = new DevExpress.XtraCharts.ChartControl();
+            this.btnSetting = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.chartControl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(sideBySideBarSeriesLabel2)).BeginInit();
             this.SuspendLayout();
             // 
-            // lb
+            // chartControl
             // 
-            this.lb.AutoSize = true;
-            this.lb.Location = new System.Drawing.Point(50, 60);
-            this.lb.Name = "lb";
-            this.lb.Size = new System.Drawing.Size(65, 12);
-            this.lb.TabIndex = 0;
-            this.lb.Text = "TEST plugin";
+            this.chartControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.chartControl.Location = new System.Drawing.Point(15, 40);
+            this.chartControl.Name = "chartControl";
+            this.chartControl.SeriesSerializable = new DevExpress.XtraCharts.Series[0];
+            sideBySideBarSeriesLabel2.LineVisible = true;
+            this.chartControl.SeriesTemplate.Label = sideBySideBarSeriesLabel2;
+            this.chartControl.Size = new System.Drawing.Size(620, 793);
+            this.chartControl.TabIndex = 0;
+            // 
+            // btnSetting
+            // 
+            this.btnSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSetting.Location = new System.Drawing.Point(560, 9);
+            this.btnSetting.Name = "btnSetting";
+            this.btnSetting.Size = new System.Drawing.Size(75, 23);
+            this.btnSetting.TabIndex = 1;
+            this.btnSetting.Text = "Settings";
+            this.btnSetting.UseVisualStyleBackColor = true;
+            this.btnSetting.Click += new System.EventHandler(this.btnSetting_Click);
             // 
             // MapWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.lb);
+            this.Controls.Add(this.btnSetting);
+            this.Controls.Add(this.chartControl);
             this.Name = "MapWindow";
             this.Size = new System.Drawing.Size(650, 848);
+            ((System.ComponentModel.ISupportInitialize)(sideBySideBarSeriesLabel2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartControl)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Label lb;
+        private DevExpress.XtraCharts.ChartControl chartControl;
+        private System.Windows.Forms.Button btnSetting;
+
     }
 }
