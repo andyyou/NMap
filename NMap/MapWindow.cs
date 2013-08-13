@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Drawing;
 using System.Data;
 using System.Linq;
@@ -10,6 +11,7 @@ using WRPlugIn;
 
 namespace NMap
 {
+    [Export(typeof(IWRPlugIn))]
     public partial class MapWindow : UserControl, IWRPlugIn, IWRMapWindow
     {
         public MapWindow()
