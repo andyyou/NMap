@@ -9,16 +9,20 @@ using System.Text;
 using System.Windows.Forms;
 using WRPlugIn;
 using DevExpress.XtraCharts;
+using Newtonsoft.Json;
 
 namespace NMap
 {
     [Export(typeof(IWRPlugIn))]
-    public partial class MapWindow : UserControl, IWRPlugIn, IWRMapWindow, IOnFlaws
+    public partial class MapWindow : UserControl, IWRPlugIn, IWRMapWindow, IOnFlaws, IOnJobLoaded, IOnJobStarted, IOnClassifyFlaw
     {
+        private List<FlawLegend> _legend;
+
         public MapWindow()
         {
             InitializeComponent();
-            InitialChart();
+
+            Properties.Settings.Default.Reset();
         }
 
         private void InitialChart()
@@ -38,7 +42,8 @@ namespace NMap
             //diagram.AxisX.Range.ScrollingRange.SetMinMaxValues(0, );
             diagram.AxisX.NumericOptions.Format = NumericFormat.Number;
             diagram.AxisX.NumericOptions.Precision = 6;
-            diagram.AxisX.GridLines.Visible = true;
+            diagram.AxisX.Reverse = Properties.Settings.Default.CDInverse;
+            diagram.AxisX.GridLines.Visible = Properties.Settings.Default.ShowMapGrid;
             diagram.AxisX.GridLines.LineStyle.DashStyle = DashStyle.Dash;
             diagram.AxisX.GridSpacingAuto = false;
 
@@ -50,7 +55,8 @@ namespace NMap
             //diagram.AxisY.Range.ScrollingRange.SetMinMaxValues(0, );
             diagram.AxisY.NumericOptions.Format = NumericFormat.Number;
             diagram.AxisY.NumericOptions.Precision = 6;
-            diagram.AxisY.GridLines.Visible = true;
+            diagram.AxisY.Reverse = Properties.Settings.Default.MDInverse;
+            diagram.AxisY.GridLines.Visible = Properties.Settings.Default.ShowMapGrid;
             diagram.AxisY.GridLines.LineStyle.DashStyle = DashStyle.Dash;
             diagram.AxisY.GridSpacingAuto = false;
 
@@ -59,12 +65,15 @@ namespace NMap
 
         private void btnSetting_Click(object sender, EventArgs e)
         {
-            Random rnd = new Random();
-            Series series = new Series("", ViewType.Point);
-            series.Points.Add(new SeriesPoint(rnd.Next(0, 100), rnd.Next(0, 100)));
-            series.ArgumentScaleType = ScaleType.Numerical;
-            series.ValueScaleType = ScaleType.Numerical;
-            chartControl.Series.Add(series);
+            //Random rnd = new Random();
+            //Series series = new Series("", ViewType.Point);
+            //series.Points.Add(new SeriesPoint(rnd.Next(0, 2), rnd.Next(0, 2)));
+            //series.ArgumentScaleType = ScaleType.Numerical;
+            //series.ValueScaleType = ScaleType.Numerical;
+            //chartControl.Series.Add(series);
+            //var obj = JsonConvert.SerializeObject(_legend, Formatting.Indented);
+            Settings setting = new Settings();
+            setting.ShowDialog();
         }
 
         #region IWRMapWindow 成員
@@ -120,12 +129,49 @@ namespace NMap
                 series.Points.Add(new SeriesPoint(flaw.CD, flaw.MD));
                 series.ArgumentScaleType = ScaleType.Numerical;
                 series.ValueScaleType = ScaleType.Numerical;
-                //series.CrosshairEnabled = DevExpress.Utils.DefaultBoolean.False;
+                series.CrosshairEnabled = DevExpress.Utils.DefaultBoolean.False;
                 series.Label.PointOptions.PointView = PointView.SeriesName;
                 chartControl.Series.Add(series);
             }
         }
 
         #endregion
+
+        #region IOnJobLoaded 成員
+
+        public void OnJobLoaded(IList<IFlawTypeName> flawTypes, IList<ILaneInfo> lanes, IList<ISeverityInfo> severityInfo, IJobInfo jobInfo)
+        {
+            btnSetting.Enabled = true;
+        }
+
+        #endregion
+
+        #region IOnJobStarted 成員
+
+        public void OnJobStarted(int jobKey)
+        {
+            // TODO: Save settings to databases
+        }
+
+        #endregion
+
+        #region IOnClassifyFlaw 成員
+
+        public void OnClassifyFlaw(ref IFlawInfo flaw, ref bool deleteFlaw)
+        {
+            //throw new NotImplementedException();
+        }
+
+        public void OnSetFlawLegend(List<FlawLegend> legend)
+        {
+            _legend = legend;
+        }
+
+        #endregion
+
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            InitialChart();
+        }
     }
 }
