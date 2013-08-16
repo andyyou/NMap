@@ -40,7 +40,6 @@
     <Reference Include="DevExpress.XtraCharts.v12.2.UI, Version=12.2.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.XtraCharts.v12.2.Wizard, Version=12.2.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
     <Reference Include="DevExpress.XtraEditors.v12.2, Version=12.2.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
-    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition, Version=2010.2.11.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -71,6 +70,7 @@
     <Compile Include="MapWindow.Designer.cs">
       <DependentUpon>MapWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\Column.cs" />
     <Compile Include="Model\Legend.cs" />
     <Compile Include="Model\Settings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

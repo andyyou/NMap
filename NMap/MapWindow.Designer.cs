@@ -28,12 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DevExpress.XtraCharts.SideBySideBarSeriesLabel sideBySideBarSeriesLabel2 = new DevExpress.XtraCharts.SideBySideBarSeriesLabel();
+            DevExpress.XtraCharts.SideBySideBarSeriesLabel sideBySideBarSeriesLabel1 = new DevExpress.XtraCharts.SideBySideBarSeriesLabel();
             this.chartControl = new DevExpress.XtraCharts.ChartControl();
             this.btnSetting = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
+            this.btnReset = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(sideBySideBarSeriesLabel2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(sideBySideBarSeriesLabel1)).BeginInit();
             this.SuspendLayout();
             // 
             // chartControl
@@ -44,8 +45,8 @@
             this.chartControl.Location = new System.Drawing.Point(15, 40);
             this.chartControl.Name = "chartControl";
             this.chartControl.SeriesSerializable = new DevExpress.XtraCharts.Series[0];
-            sideBySideBarSeriesLabel2.LineVisible = true;
-            this.chartControl.SeriesTemplate.Label = sideBySideBarSeriesLabel2;
+            sideBySideBarSeriesLabel1.LineVisible = true;
+            this.chartControl.SeriesTemplate.Label = sideBySideBarSeriesLabel1;
             this.chartControl.Size = new System.Drawing.Size(620, 793);
             this.chartControl.TabIndex = 0;
             // 
@@ -70,16 +71,27 @@
             this.btnStart.UseVisualStyleBackColor = true;
             this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
             // 
+            // btnReset
+            // 
+            this.btnReset.Location = new System.Drawing.Point(399, 9);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(75, 23);
+            this.btnReset.TabIndex = 3;
+            this.btnReset.Text = "100%";
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
             // MapWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnStart);
             this.Controls.Add(this.btnSetting);
             this.Controls.Add(this.chartControl);
             this.Name = "MapWindow";
             this.Size = new System.Drawing.Size(650, 848);
-            ((System.ComponentModel.ISupportInitialize)(sideBySideBarSeriesLabel2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(sideBySideBarSeriesLabel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl)).EndInit();
             this.ResumeLayout(false);
 
@@ -90,6 +102,7 @@
         private DevExpress.XtraCharts.ChartControl chartControl;
         private System.Windows.Forms.Button btnSetting;
         private System.Windows.Forms.Button btnStart;
+        private System.Windows.Forms.Button btnReset;
 
     }
 }
