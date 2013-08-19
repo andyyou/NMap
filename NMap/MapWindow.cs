@@ -12,21 +12,32 @@ using DevExpress.XtraCharts;
 using System.IO;
 using System.Reflection;
 using System.Xml.Linq;
-
+using NMap.Helper;
+using NMap.Model;
 
 namespace NMap
 {
     [Export(typeof(IWRPlugIn))]
     public partial class MapWindow : UserControl, IWRPlugIn, IWRMapWindow, IOnFlaws, IOnJobLoaded, IOnJobStarted, IOnClassifyFlaw
     {
-        private List<NMap.Model.Legend> _legends = new List<NMap.Model.Legend>();
+        private Config _config = new Config() { Legends = new List<NMap.Model.Legend>() };
         private static string _xmlPath = Path.GetDirectoryName(
                                          Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName) + 
-                                         "\\..\\Parameter Files\\NMap\\legends.xml";
+                                         @"\..\Parameter Files\NMap\legends.xml";
+        private Dictionary<string, MarkerKind> _dicSeriesShape = new Dictionary<string, MarkerKind>()
+        {
+            { "Triangle", MarkerKind.Triangle },
+            { "InvertedTriangle", MarkerKind.InvertedTriangle },
+            { "Square", MarkerKind.Square },
+            { "Circle", MarkerKind.Circle },
+            { "Plus", MarkerKind.Plus },
+            { "Cross", MarkerKind.Cross },
+            { "Star", MarkerKind.Star }
+        };
+
         public MapWindow()
         {
             InitializeComponent();
-            Properties.Settings.Default.Reset();
         }
 
         #region Refactoring Method
@@ -51,8 +62,8 @@ namespace NMap
             //diagram.AxisX.Range.ScrollingRange.SetMinMaxValues(0, );
             diagram.AxisX.NumericOptions.Format = NumericFormat.Number;
             diagram.AxisX.NumericOptions.Precision = 6;
-            diagram.AxisX.Reverse = Properties.Settings.Default.CDInverse;
-            diagram.AxisX.GridLines.Visible = Properties.Settings.Default.ShowMapGrid;
+            diagram.AxisX.Reverse = _config.CDInverse;
+            diagram.AxisX.GridLines.Visible = _config.ShowMapGrid == "On" ? true : false;
             diagram.AxisX.GridLines.LineStyle.DashStyle = DashStyle.Dash;
             diagram.AxisX.GridSpacingAuto = false;
 
@@ -64,10 +75,19 @@ namespace NMap
             //diagram.AxisY.Range.ScrollingRange.SetMinMaxValues(0, );
             diagram.AxisY.NumericOptions.Format = NumericFormat.Number;
             diagram.AxisY.NumericOptions.Precision = 6;
-            diagram.AxisY.Reverse = Properties.Settings.Default.MDInverse;
-            diagram.AxisY.GridLines.Visible = Properties.Settings.Default.ShowMapGrid;
+            diagram.AxisY.Reverse = _config.MDInverse;
+            diagram.AxisY.GridLines.Visible = _config.ShowMapGrid == "On" ? true : false;
             diagram.AxisY.GridLines.LineStyle.DashStyle = DashStyle.Dash;
             diagram.AxisY.GridSpacingAuto = false;
+
+            if (_config.BottomAxes == "CD")
+            {
+                diagram.Rotated = false;
+            }
+            else
+            {
+                diagram.Rotated = true;
+            }
 
             chartControl.Series.Clear();
         }
@@ -123,7 +143,6 @@ namespace NMap
 
         public void OnFlaws(IList<IFlawInfo> flaws)
         {
-
             foreach (var flaw in flaws)
             {
                 Series series = new Series(flaw.FlawID.ToString(), ViewType.Point);
@@ -132,6 +151,15 @@ namespace NMap
                 series.ValueScaleType = ScaleType.Numerical;
                 series.CrosshairEnabled = DevExpress.Utils.DefaultBoolean.False;
                 series.Label.PointOptions.PointView = PointView.SeriesName;
+
+                NMap.Model.Legend legend = _config.Legends.Where(l => l.Name == flaw.FlawClass).FirstOrDefault();
+                string shape = legend.Shape;
+                string color = legend.Color;
+
+                PointSeriesView pointView = (PointSeriesView)series.View;
+                pointView.PointMarkerOptions.Kind = _dicSeriesShape[shape];
+                pointView.Color = System.Drawing.ColorTranslator.FromHtml(color);
+                
                 chartControl.Series.Add(series);
             }
             // UNDONE
@@ -146,7 +174,7 @@ namespace NMap
         public void OnJobLoaded(IList<IFlawTypeName> flawTypes, IList<ILaneInfo> lanes, IList<ISeverityInfo> severityInfo, IJobInfo jobInfo)
         {
             btnSetting.Enabled = true;
-            InitialChart();
+            //InitialChart();
         }
 
         #endregion
@@ -164,13 +192,19 @@ namespace NMap
             {
                 NMap.Model.Legend l = new NMap.Model.Legend();
                 l.ClassID = item.ClassID.ToString();
-                l.Color = item.Color.ToString();
+                //l.Color = item.Color.ToString();
+                l.Color = String.Format("#{0:X2}{1:X2}{2:X2}",
+                              ColorTranslator.FromWin32((int)item.Color).R,
+                              ColorTranslator.FromWin32((int)item.Color).G,
+                              ColorTranslator.FromWin32((int)item.Color).B);
                 l.Name = item.Name;
                 l.OriginLegend = item;
-                l.Shape = "None";
-                _legends.Add(l);
+                //l.Shape = "None";
+                _config.Legends.Add(l);
             }
-
+            // Reset config
+            ConfigHelper ch = new ConfigHelper();
+            ch.CreateConfigFile(_config.Legends);
         }
 
         #endregion
@@ -179,7 +213,10 @@ namespace NMap
 
         public void OnJobStarted(int jobKey)
         {
-            // TODO: Save settings to databases
+            // Get config from xml file
+            ConfigHelper ch = new ConfigHelper();
+            _config = ch.GetConfigFile();
+            InitialChart();
         }
 
         #endregion
@@ -229,19 +266,34 @@ namespace NMap
             //chartControl.Series.Add(series);
             // var obj = JsonConvert.SerializeObject(_legend, Formatting.Indented);
             #region Read XML
-            XDocument xdoc = XDocument.Load(_xmlPath);
-            // IEnumerable<XElement> elLegends =   from el in doc.Elements() select el;
-            foreach (var item in _legends)
-            {
-                XElement xmlLegend = xdoc.Root.Elements("Legend").Where(el => (string)el.Attribute("ClassID") == item.ClassID).FirstOrDefault();
-                item.Shape = xmlLegend.Attribute("Shape").Value;
-                item.Color = xmlLegend.Attribute("Color").Value;
 
-            }
+            ConfigHelper ch = new ConfigHelper();
+            _config = ch.GetConfigFile();
+            //XDocument xdoc = XDocument.Load(_xmlPath);
+            //// IEnumerable<XElement> elLegends =   from el in doc.Elements() select el;
+            //// Get map setting
+            //XElement xmlMap = xdoc.Root.Elements("Map").FirstOrDefault();
+            //_config.ShowMapGrid = xmlMap.Attribute("ShowGrid").Value;
+            //_config.BottomAxes = xmlMap.Attribute("BottomAxes").Value;
+            //_config.MDInverse = Convert.ToBoolean(xmlMap.Attribute("MDInverse").Value);
+            //_config.CDInverse = Convert.ToBoolean(xmlMap.Attribute("CDInverse").Value);
+
+            //// Get legend steeing
+            //foreach (var item in _config.Legends)
+            //{
+            //    XElement xmlLegend = xdoc.Root.Elements("Legend").Where(el => (string)el.Attribute("ClassID") == item.ClassID).FirstOrDefault();
+            //    if (xmlLegend != null)
+            //    {
+            //        item.Shape = xmlLegend.Attribute("Shape").Value;
+            //        item.Color = xmlLegend.Attribute("Color").Value;
+            //    }
+            //}
 
             #endregion
 
-            Settings setting = new Settings(_legends);
+            //Settings setting = new Settings(_legends);
+            //setting.ShowDialog();
+            Settings setting = new Settings(_config);
             setting.ShowDialog();
         }
         #endregion

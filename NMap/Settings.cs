@@ -19,29 +19,29 @@ namespace NMap
         private List<NMap.Model.Legend> _legends = new List<NMap.Model.Legend>();
         private static string _xmlPath = Path.GetDirectoryName(
                                          Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName) +
-                                         "\\..\\Parameter Files\\NMap\\legends.xml";
+                                         @"\..\Parameter Files\NMap\legends.xml";
+        private Dictionary<string, string> shapes = new Dictionary<string, string>(){
+            { "Triangle", "▲" },
+            { "InvertedTriangle", "▼" },
+            { "Square", "■" },
+            { "Circle", "●" },
+            { "Plus", "✚" },
+            { "Cross", "✖" },
+            { "Star", "★" }
+        };
+
         /// <summary>
         /// 建構子
         /// </summary>
         /// <param name="legends"></param>
-        public Settings(List<NMap.Model.Legend> legends)
+        public Settings(Config config)
         {
             InitializeComponent();
 
-            if (Properties.Settings.Default.Initial == true)
-            {
-                cmbShowMapGrid.SelectedItem = "On";
-                cmbBottomAxes.SelectedItem = "CD";
-                chkMDInverse.Checked = false;
-                chkCDInverse.Checked = false;
-            }
-            else
-            {
-                cmbShowMapGrid.SelectedItem = Properties.Settings.Default.ShowMapGrid ? "On" : "Off";
-                cmbBottomAxes.SelectedItem = Properties.Settings.Default.BottomAxes;
-                chkMDInverse.Checked = Properties.Settings.Default.MDInverse;
-                chkCDInverse.Checked = Properties.Settings.Default.CDInverse;
-            }
+            cmbShowMapGrid.SelectedItem = config.ShowMapGrid;
+            cmbBottomAxes.SelectedItem = config.BottomAxes;
+            chkMDInverse.Checked = config.MDInverse;
+            chkCDInverse.Checked = config.CDInverse;
 
             // Initialize DataGridView
             List<Column> columns = new List<Column>();
@@ -55,38 +55,40 @@ namespace NMap
             columns.Add(shape);
             foreach (Column c in columns)
             {
-                //if (c.Name == "Shape")
-                //{
-                    // UNDONE
-                    //DataGridViewComboBoxColumn cmbShape = new DataGridViewComboBoxColumn();
-                    //cmbShape.HeaderText = c.Name;
-                    //cmbShape.DisplayIndex = c.Index;
-                    //cmbShape.DataPropertyName = c.Name;
-                    //cmbShape.Width = c.Width;
-                    //cmbShape.DataSource = new BindingSource(shapes, null);
-                    //cmbShape.DisplayMember = "Value";
-                    //cmbShape.ValueMember = "Key";
-                    //dgvFlawLegends.Columns.Add(cmbShape);
-                //}
-                DataGridViewCell cell = new DataGridViewTextBoxCell();
-                DataGridViewColumn column = new DataGridViewColumn();
-                column.CellTemplate = cell;
-                column.Name = c.Name;
-                column.HeaderText = c.Name;
-                column.Width = c.Width;
-                column.DataPropertyName = c.Name;
-                column.SortMode = DataGridViewColumnSortMode.Automatic;
-                if (c.Name == "ClassID" || c.Name == "Name" || c.Name == "Color")
+                if (c.Name == "Shape")
                 {
-                    column.ReadOnly = true;
+                    DataGridViewComboBoxColumn cmbShape = new DataGridViewComboBoxColumn();
+                    cmbShape.HeaderText = c.Name;
+                    cmbShape.DisplayIndex = c.Index;
+                    cmbShape.DataPropertyName = c.Name;
+                    cmbShape.Width = c.Width;
+                    cmbShape.DataSource = new BindingSource(shapes, null);
+                    cmbShape.DisplayMember = "Value";
+                    cmbShape.ValueMember = "Key";
+                    dgvFlawLegends.Columns.Add(cmbShape);
                 }
-                dgvFlawLegends.Columns.Add(column);
+                else
+                {
+                    DataGridViewCell cell = new DataGridViewTextBoxCell();
+                    DataGridViewColumn column = new DataGridViewColumn();
+                    column.CellTemplate = cell;
+                    column.Name = c.Name;
+                    column.HeaderText = c.Name;
+                    column.Width = c.Width;
+                    column.DataPropertyName = c.Name;
+                    column.SortMode = DataGridViewColumnSortMode.Automatic;
+                    if (c.Name == "ClassID" || c.Name == "Name" || c.Name == "Color")
+                    {
+                        column.ReadOnly = true;
+                    }
+                    dgvFlawLegends.Columns.Add(column);
+                }
             }
             dgvFlawLegends.MultiSelect = false;
             dgvFlawLegends.AutoGenerateColumns = false;
 
             // Load legends
-            _legends = legends;
+            _legends = config.Legends;
             dgvFlawLegends.DataSource = _legends;
         }
 
@@ -100,10 +102,21 @@ namespace NMap
             // Save xml
             XDocument xdoc = XDocument.Load(_xmlPath);
             xdoc.Root.Elements().ToList().ForEach(el => el.Remove()); ;
+
+            // Add Map setting
+            XElement element = new XElement("Map");
+            element.SetAttributeValue("ShowGrid", cmbShowMapGrid.SelectedItem);
+            element.SetAttributeValue("BottomAxes", cmbBottomAxes.SelectedItem);
+            element.SetAttributeValue("MDInverse", chkMDInverse.Checked);
+            element.SetAttributeValue("CDInverse", chkCDInverse.Checked);
+            xdoc.Root.Add(element);
+
+            // Add defects setting
             foreach (DataGridViewRow item in dgvFlawLegends.Rows)
             {
                 XElement el = new XElement("Legend");
                 el.SetAttributeValue("ClassID", item.Cells[0].Value);
+                el.SetAttributeValue("Name", item.Cells[1].Value);
                 el.SetAttributeValue("Color", item.Cells[2].Value);
                 el.SetAttributeValue("Shape", item.Cells[3].Value);
                 xdoc.Root.Add(el);
@@ -114,20 +127,12 @@ namespace NMap
         }
 
         /// <summary>
-        /// 取消
+        /// 關閉
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void btnClose_Click(object sender, EventArgs e)
         {
-            // Save settings to dll setting as temporary setting
-            Properties.Settings.Default.Initial = false;
-            Properties.Settings.Default.ShowMapGrid = cmbShowMapGrid.SelectedItem.ToString() == "On" ? true : false;
-            Properties.Settings.Default.BottomAxes = cmbBottomAxes.SelectedItem.ToString();
-            Properties.Settings.Default.MDInverse = chkMDInverse.Checked;
-            Properties.Settings.Default.CDInverse = chkCDInverse.Checked;
-
-            Properties.Settings.Default.Save();
             this.Close();
         }
 

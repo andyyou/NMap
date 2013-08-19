@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnClose = new System.Windows.Forms.Button();
             this.grbMapSettings = new System.Windows.Forms.GroupBox();
             this.cmbShowMapGrid = new System.Windows.Forms.ComboBox();
             this.chkCDInverse = new System.Windows.Forms.CheckBox();
@@ -44,15 +44,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvFlawLegends)).BeginInit();
             this.SuspendLayout();
             // 
-            // btnCancel
+            // btnClose
             // 
-            this.btnCancel.Location = new System.Drawing.Point(377, 447);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 2;
-            this.btnCancel.Text = "Close";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            this.btnClose.Location = new System.Drawing.Point(377, 447);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(75, 23);
+            this.btnClose.TabIndex = 2;
+            this.btnClose.Text = "Close";
+            this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // grbMapSettings
             // 
@@ -176,7 +176,7 @@
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.gbSeriesSetting);
             this.Controls.Add(this.grbMapSettings);
-            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnClose);
             this.Name = "Settings";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Settings";
@@ -190,7 +190,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.GroupBox grbMapSettings;
         private System.Windows.Forms.CheckBox chkCDInverse;
         private System.Windows.Forms.CheckBox chkMDInverse;
