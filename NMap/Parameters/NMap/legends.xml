@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Config>
+  <Legend ClassID="1000" Color="#FF0000" Shape="Triangle" />
+  <Legend ClassID="1001" Color="#0000FF" Shape="Square" />
+  <Legend ClassID="1002" Color="#00FF00" Shape="Circle" />
+</Config>

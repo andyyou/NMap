@@ -20,7 +20,10 @@ namespace NMap
         private static string _xmlPath = Path.GetDirectoryName(
                                          Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName) +
                                          "\\..\\Parameter Files\\NMap\\legends.xml";
-
+        /// <summary>
+        /// 建構子
+        /// </summary>
+        /// <param name="legends"></param>
         public Settings(List<NMap.Model.Legend> legends)
         {
             InitializeComponent();
@@ -42,14 +45,14 @@ namespace NMap
 
             // Initialize DataGridView
             List<Column> columns = new List<Column>();
-            Column flawType = new Column(0, "ClassID", 60);
+            Column classId = new Column(0, "ClassID", 60);
             Column name = new Column(1, "Name", 120);
-            Column shape = new Column(2, "Color", 80);
-            Column color = new Column(3, "Shape", 80);
-            columns.Add(flawType);
+            Column color = new Column(2, "Color", 80);
+            Column shape = new Column(3, "Shape", 80);
+            columns.Add(classId);
             columns.Add(name);
-            columns.Add(shape);
             columns.Add(color);
+            columns.Add(shape);
             foreach (Column c in columns)
             {
                 //if (c.Name == "Shape")
@@ -65,7 +68,6 @@ namespace NMap
                     //cmbShape.ValueMember = "Key";
                     //dgvFlawLegends.Columns.Add(cmbShape);
                 //}
-
                 DataGridViewCell cell = new DataGridViewTextBoxCell();
                 DataGridViewColumn column = new DataGridViewColumn();
                 column.CellTemplate = cell;
@@ -82,14 +84,17 @@ namespace NMap
             }
             dgvFlawLegends.MultiSelect = false;
             dgvFlawLegends.AutoGenerateColumns = false;
+
             // Load legends
             _legends = legends;
             dgvFlawLegends.DataSource = _legends;
-            
-           
-
         }
 
+        /// <summary>
+        /// 儲存設定檔
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnSave_Click(object sender, EventArgs e)
         {
             // Save xml
@@ -108,6 +113,11 @@ namespace NMap
 
         }
 
+        /// <summary>
+        /// 取消
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnCancel_Click(object sender, EventArgs e)
         {
             // Save settings to dll setting as temporary setting
@@ -144,17 +154,17 @@ namespace NMap
         /// <param name="e"></param>
         private void dgvFlawLegends_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
-            //if (e.ColumnIndex == 3)
-            //{
-            //    ColorDialog cd = new ColorDialog();
-            //    DialogResult dr = cd.ShowDialog();
-            //    if (dr == DialogResult.OK)
-            //    {
-            //        dgvFlawLegends.Rows[e.RowIndex]["Color"] = String.Format("#{0:X2}{1:X2}{2:X2}", cd.Color.R, cd.Color.G, cd.Color.B);
-            //        dgvFlawLegends.EndEdit();
-            //        dgvFlawLegends.ClearSelection();
-            //    }
-            //}
+            if (e.ColumnIndex == 2)
+            {
+                ColorDialog cd = new ColorDialog();
+                DialogResult dr = cd.ShowDialog();
+                if (dr == DialogResult.OK)
+                {
+                    dgvFlawLegends.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = String.Format("#{0:X2}{1:X2}{2:X2}", cd.Color.R, cd.Color.G, cd.Color.B);
+                    dgvFlawLegends.EndEdit();
+                    dgvFlawLegends.ClearSelection();
+                }
+            }
         }
     }
 }
