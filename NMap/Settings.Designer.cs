@@ -30,6 +30,7 @@
         {
             this.btnCancel = new System.Windows.Forms.Button();
             this.grbMapSettings = new System.Windows.Forms.GroupBox();
+            this.cmbShowMapGrid = new System.Windows.Forms.ComboBox();
             this.chkCDInverse = new System.Windows.Forms.CheckBox();
             this.chkMDInverse = new System.Windows.Forms.CheckBox();
             this.cmbBottomAxes = new System.Windows.Forms.ComboBox();
@@ -37,7 +38,7 @@
             this.lblMapGridShow = new System.Windows.Forms.Label();
             this.gbSeriesSetting = new System.Windows.Forms.GroupBox();
             this.dgvFlawLegends = new System.Windows.Forms.DataGridView();
-            this.cmbShowMapGrid = new System.Windows.Forms.ComboBox();
+            this.btnSave = new System.Windows.Forms.Button();
             this.grbMapSettings.SuspendLayout();
             this.gbSeriesSetting.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFlawLegends)).BeginInit();
@@ -67,6 +68,18 @@
             this.grbMapSettings.TabIndex = 0;
             this.grbMapSettings.TabStop = false;
             this.grbMapSettings.Text = "Map Setting";
+            // 
+            // cmbShowMapGrid
+            // 
+            this.cmbShowMapGrid.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbShowMapGrid.FormattingEnabled = true;
+            this.cmbShowMapGrid.Items.AddRange(new object[] {
+            "Off",
+            "On"});
+            this.cmbShowMapGrid.Location = new System.Drawing.Point(108, 19);
+            this.cmbShowMapGrid.Name = "cmbShowMapGrid";
+            this.cmbShowMapGrid.Size = new System.Drawing.Size(82, 20);
+            this.cmbShowMapGrid.TabIndex = 7;
             // 
             // chkCDInverse
             // 
@@ -141,18 +154,18 @@
             this.dgvFlawLegends.RowTemplate.Height = 24;
             this.dgvFlawLegends.Size = new System.Drawing.Size(412, 305);
             this.dgvFlawLegends.TabIndex = 0;
+            this.dgvFlawLegends.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvFlawLegends_CellDoubleClick);
+            this.dgvFlawLegends.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvFlawLegends_CellFormatting);
             // 
-            // cmbShowMapGrid
+            // btnSave
             // 
-            this.cmbShowMapGrid.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbShowMapGrid.FormattingEnabled = true;
-            this.cmbShowMapGrid.Items.AddRange(new object[] {
-            "Off",
-            "On"});
-            this.cmbShowMapGrid.Location = new System.Drawing.Point(108, 19);
-            this.cmbShowMapGrid.Name = "cmbShowMapGrid";
-            this.cmbShowMapGrid.Size = new System.Drawing.Size(82, 20);
-            this.cmbShowMapGrid.TabIndex = 7;
+            this.btnSave.Location = new System.Drawing.Point(296, 447);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.TabIndex = 3;
+            this.btnSave.Text = "Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // Settings
             // 
@@ -160,6 +173,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(465, 482);
             this.ControlBox = false;
+            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.gbSeriesSetting);
             this.Controls.Add(this.grbMapSettings);
             this.Controls.Add(this.btnCancel);
@@ -186,5 +200,6 @@
         private System.Windows.Forms.GroupBox gbSeriesSetting;
         private System.Windows.Forms.DataGridView dgvFlawLegends;
         private System.Windows.Forms.ComboBox cmbShowMapGrid;
+        private System.Windows.Forms.Button btnSave;
     }
 }

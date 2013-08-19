@@ -9,22 +9,31 @@ using System.Text;
 using System.Windows.Forms;
 using WRPlugIn;
 using DevExpress.XtraCharts;
-using Newtonsoft.Json;
+using System.IO;
+using System.Reflection;
+using System.Xml.Linq;
+
 
 namespace NMap
 {
     [Export(typeof(IWRPlugIn))]
     public partial class MapWindow : UserControl, IWRPlugIn, IWRMapWindow, IOnFlaws, IOnJobLoaded, IOnJobStarted, IOnClassifyFlaw
     {
-        private List<FlawLegend> _legend;
-
+        private List<NMap.Model.Legend> _legends = new List<NMap.Model.Legend>();
+        private static string _xmlPath = Path.GetDirectoryName(
+                                         Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName) + 
+                                         "\\..\\Parameter Files\\NMap\\legends.xml";
         public MapWindow()
         {
             InitializeComponent();
-
             Properties.Settings.Default.Reset();
         }
 
+        #region Refactoring Method
+
+        /// <summary>
+        /// 初始化圖表
+        /// </summary>
         private void InitialChart()
         {
             chartControl.RuntimeHitTesting = true;
@@ -63,18 +72,9 @@ namespace NMap
             chartControl.Series.Clear();
         }
 
-        private void btnSetting_Click(object sender, EventArgs e)
-        {
-            //Random rnd = new Random();
-            //Series series = new Series("", ViewType.Point);
-            //series.Points.Add(new SeriesPoint(rnd.Next(0, 2), rnd.Next(0, 2)));
-            //series.ArgumentScaleType = ScaleType.Numerical;
-            //series.ValueScaleType = ScaleType.Numerical;
-            //chartControl.Series.Add(series);
-            //var obj = JsonConvert.SerializeObject(_legend, Formatting.Indented);
-            Settings setting = new Settings();
-            setting.ShowDialog();
-        }
+        #endregion
+
+        #region WRPlugin 介面
 
         #region IWRMapWindow 成員
 
@@ -123,6 +123,7 @@ namespace NMap
 
         public void OnFlaws(IList<IFlawInfo> flaws)
         {
+
             foreach (var flaw in flaws)
             {
                 Series series = new Series(flaw.FlawID.ToString(), ViewType.Point);
@@ -133,6 +134,9 @@ namespace NMap
                 series.Label.PointOptions.PointView = PointView.SeriesName;
                 chartControl.Series.Add(series);
             }
+            // UNDONE
+            XYDiagram diagram = (XYDiagram)chartControl.Diagram;
+            diagram.AxisY.Range.ScrollingRange.MaxValue = diagram.AxisY.Range.MaxValue;
         }
 
         #endregion
@@ -142,15 +146,7 @@ namespace NMap
         public void OnJobLoaded(IList<IFlawTypeName> flawTypes, IList<ILaneInfo> lanes, IList<ISeverityInfo> severityInfo, IJobInfo jobInfo)
         {
             btnSetting.Enabled = true;
-        }
-
-        #endregion
-
-        #region IOnJobStarted 成員
-
-        public void OnJobStarted(int jobKey)
-        {
-            // TODO: Save settings to databases
+            InitialChart();
         }
 
         #endregion
@@ -164,14 +160,90 @@ namespace NMap
 
         public void OnSetFlawLegend(List<FlawLegend> legend)
         {
-            _legend = legend;
+            foreach (var item in legend)
+            {
+                NMap.Model.Legend l = new NMap.Model.Legend();
+                l.ClassID = item.ClassID.ToString();
+                l.Color = item.Color.ToString();
+                l.Name = item.Name;
+                l.OriginLegend = item;
+                l.Shape = "None";
+                _legends.Add(l);
+            }
+
         }
 
         #endregion
 
+        #region IOnJobStarted 成員
+
+        public void OnJobStarted(int jobKey)
+        {
+            // TODO: Save settings to databases
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Events 
+
+        /// <summary>
+        /// 測試用
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnStart_Click(object sender, EventArgs e)
         {
             InitialChart();
         }
+
+        /// <summary>
+        /// 調整 Map Zoom 回復 1 : 1
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            XYDiagram diagram = (XYDiagram)chartControl.Diagram;
+            diagram.AxisX.Range.Auto = true;
+            diagram.AxisX.Range.ScrollingRange.Auto = true;
+            //
+            diagram.AxisX.Range.Auto = false;
+            diagram.AxisX.Range.ScrollingRange.Auto = false;
+
+        }
+
+        /// <summary>
+        /// 開啟設定視窗 設定 Map 相關參數
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnSetting_Click(object sender, EventArgs e)
+        {
+            //Random rnd = new Random();
+            //Series series = new Series("", ViewType.Point);
+            //series.Points.Add(new SeriesPoint(rnd.Next(0, 2), rnd.Next(0, 2)));
+            //series.ArgumentScaleType = ScaleType.Numerical;
+            //series.ValueScaleType = ScaleType.Numerical;
+            //chartControl.Series.Add(series);
+            // var obj = JsonConvert.SerializeObject(_legend, Formatting.Indented);
+            #region Read XML
+            XDocument xdoc = XDocument.Load(_xmlPath);
+            // IEnumerable<XElement> elLegends =   from el in doc.Elements() select el;
+            foreach (var item in _legends)
+            {
+                XElement xmlLegend = xdoc.Root.Elements("Legend").Where(el => (string)el.Attribute("ClassID") == item.ClassID).FirstOrDefault();
+                item.Shape = xmlLegend.Attribute("Shape").Value;
+                item.Color = xmlLegend.Attribute("Color").Value;
+
+            }
+
+            #endregion
+
+            Settings setting = new Settings(_legends);
+            setting.ShowDialog();
+        }
+        #endregion
     }
 }
