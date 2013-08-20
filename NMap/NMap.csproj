@@ -64,6 +64,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FlawForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FlawForm.designer.cs">
+      <DependentUpon>FlawForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Helper\ConfigHelper.cs" />
     <Compile Include="MapWindow.cs">
       <SubType>UserControl</SubType>
@@ -86,8 +92,19 @@
     <Compile Include="Settings.Designer.cs">
       <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="TransparentTrackbar\FusionTrackBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TransparentTrackbar\NativeMethods.cs" />
+    <Compile Include="TransparentTrackbar\TrackBarDrawItemEventArgs.cs" />
+    <Compile Include="TransparentTrackbar\TrackBarItemState.cs" />
+    <Compile Include="TransparentTrackbar\TrackBarOwnerDrawnParts.cs" />
+    <Compile Include="TransparentTrackbar\TrackDrawModeEditor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FlawForm.resx">
+      <DependentUpon>FlawForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MapWindow.resx">
       <DependentUpon>MapWindow.cs</DependentUpon>
     </EmbeddedResource>

@@ -49,6 +49,8 @@
             this.chartControl.SeriesTemplate.Label = sideBySideBarSeriesLabel1;
             this.chartControl.Size = new System.Drawing.Size(620, 793);
             this.chartControl.TabIndex = 0;
+            this.chartControl.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.chartControl_MouseDoubleClick);
+            this.chartControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chartControl_MouseMove);
             // 
             // btnSetting
             // 

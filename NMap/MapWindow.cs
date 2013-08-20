@@ -34,10 +34,23 @@ namespace NMap
             { "Cross", MarkerKind.Cross },
             { "Star", MarkerKind.Star }
         };
+        private DataTable _flawData;
+        private IJobInfo _jobInfo;
 
         public MapWindow()
         {
             InitializeComponent();
+
+            // Initialize datatable struct
+            _flawData = new DataTable();
+            _flawData.Columns.Add("FlawID", typeof(string));
+            _flawData.Columns.Add("FlawType", typeof(int));
+            _flawData.Columns.Add("FlawClass", typeof(string));
+            _flawData.Columns.Add("Area", typeof(string));
+            _flawData.Columns.Add("CD", typeof(double));
+            _flawData.Columns.Add("MD", typeof(double));
+            _flawData.Columns.Add("Width", typeof(double));
+            _flawData.Columns.Add("Length", typeof(double));
         }
 
         #region Refactoring Method
@@ -92,6 +105,18 @@ namespace NMap
             chartControl.Series.Clear();
         }
 
+        private DataTable QueryDataTable(DataTable dt, string condition, string sortstr)
+        {
+            DataTable newdt = new DataTable();
+            newdt = dt.Clone();
+            DataRow[] dr = dt.Select(condition, sortstr);
+            for (int i = 0; i < dr.Length; i++)
+            {
+                newdt.ImportRow((DataRow)dr[i]);
+            }
+            return newdt;
+        }
+
         #endregion
 
         #region WRPlugin 介面
@@ -143,28 +168,70 @@ namespace NMap
 
         public void OnFlaws(IList<IFlawInfo> flaws)
         {
+            //foreach (var flaw in flaws)
+            //{
+            //    Series series = new Series(flaw.FlawID.ToString(), ViewType.Point);
+            //    series.Points.Add(new SeriesPoint(flaw.CD, flaw.MD));
+            //    series.ArgumentScaleType = ScaleType.Numerical;
+            //    series.ValueScaleType = ScaleType.Numerical;
+            //    series.CrosshairEnabled = DevExpress.Utils.DefaultBoolean.False;
+            //    series.Label.PointOptions.PointView = PointView.SeriesName;
+
+            //    NMap.Model.Legend legend = _config.Legends.Where(l => l.Name == flaw.FlawClass).FirstOrDefault();
+            //    string shape = legend.Shape;
+            //    string color = legend.Color;
+            
+            //    PointSeriesView pointView = (PointSeriesView)series.View;
+            //    pointView.PointMarkerOptions.Kind = _dicSeriesShape[shape];
+            //    pointView.Color = System.Drawing.ColorTranslator.FromHtml(color);
+                
+            //    chartControl.Series.Add(series);
+            //}
+            //// UNDONE
+            //XYDiagram diagram = (XYDiagram)chartControl.Diagram;
+            //diagram.AxisY.Range.ScrollingRange.MaxValue = diagram.AxisY.Range.MaxValue;
+
             foreach (var flaw in flaws)
             {
-                Series series = new Series(flaw.FlawID.ToString(), ViewType.Point);
-                series.Points.Add(new SeriesPoint(flaw.CD, flaw.MD));
-                series.ArgumentScaleType = ScaleType.Numerical;
-                series.ValueScaleType = ScaleType.Numerical;
-                series.CrosshairEnabled = DevExpress.Utils.DefaultBoolean.False;
-                series.Label.PointOptions.PointView = PointView.SeriesName;
-
-                NMap.Model.Legend legend = _config.Legends.Where(l => l.Name == flaw.FlawClass).FirstOrDefault();
-                string shape = legend.Shape;
-                string color = legend.Color;
-
-                PointSeriesView pointView = (PointSeriesView)series.View;
-                pointView.PointMarkerOptions.Kind = _dicSeriesShape[shape];
-                pointView.Color = System.Drawing.ColorTranslator.FromHtml(color);
-                
-                chartControl.Series.Add(series);
+                DataRow row = null;
+                row = _flawData.NewRow();
+                row["FlawID"] = flaw.FlawID;
+                row["FlawType"] = flaw.FlawType;
+                row["FlawClass"] = flaw.FlawClass;
+                row["Area"] = flaw.Area;
+                row["CD"] = flaw.CD;
+                row["MD"] = flaw.MD;
+                row["Width"] = flaw.Width;
+                row["Length"] = flaw.Length;
+                _flawData.Rows.Add(row);
             }
-            // UNDONE
-            XYDiagram diagram = (XYDiagram)chartControl.Diagram;
-            diagram.AxisY.Range.ScrollingRange.MaxValue = diagram.AxisY.Range.MaxValue;
+
+            foreach (Series series in chartControl.Series)
+            {
+                series.DataSource = QueryDataTable(_flawData, "FlawClass = '" + series.Name + "'", ""); ;
+            }
+
+            // Add each legend to chart
+            //List<Series> seriesList = new List<Series>();
+            //foreach (var flaw in flaws)
+            //{
+            //    Series series = new Series(flaw.FlawID.ToString(), ViewType.Point);
+            //    series.Points.Add(new SeriesPoint(flaw.CD, flaw.MD));
+            //    series.ArgumentScaleType = ScaleType.Numerical;
+            //    series.ValueScaleType = ScaleType.Numerical;
+            //    series.CrosshairEnabled = DevExpress.Utils.DefaultBoolean.False;
+
+            //    NMap.Model.Legend legend = _config.Legends.Where(l => l.Name == flaw.FlawClass).FirstOrDefault();
+
+            //    PointSeriesView seriesView = (PointSeriesView)series.View;
+            //    seriesView.PointMarkerOptions.Kind = _dicSeriesShape[legend.Shape];
+            //    seriesView.Color = System.Drawing.ColorTranslator.FromHtml(legend.Color);
+
+            //    seriesList.Add(series);
+
+            //    //chartControl.Series.Add(series);
+            //}
+            //chartControl.Series.AddRange(seriesList.ToArray());
         }
 
         #endregion
@@ -173,7 +240,9 @@ namespace NMap
 
         public void OnJobLoaded(IList<IFlawTypeName> flawTypes, IList<ILaneInfo> lanes, IList<ISeverityInfo> severityInfo, IJobInfo jobInfo)
         {
+            _jobInfo = jobInfo;
             btnSetting.Enabled = true;
+            chartControl.Series.Clear();
             //InitialChart();
         }
 
@@ -188,18 +257,17 @@ namespace NMap
 
         public void OnSetFlawLegend(List<FlawLegend> legend)
         {
+            _config.Legends.Clear();
             foreach (var item in legend)
             {
                 NMap.Model.Legend l = new NMap.Model.Legend();
                 l.ClassID = item.ClassID.ToString();
-                //l.Color = item.Color.ToString();
                 l.Color = String.Format("#{0:X2}{1:X2}{2:X2}",
                               ColorTranslator.FromWin32((int)item.Color).R,
                               ColorTranslator.FromWin32((int)item.Color).G,
                               ColorTranslator.FromWin32((int)item.Color).B);
                 l.Name = item.Name;
                 l.OriginLegend = item;
-                //l.Shape = "None";
                 _config.Legends.Add(l);
             }
             // Reset config
@@ -217,6 +285,23 @@ namespace NMap
             ConfigHelper ch = new ConfigHelper();
             _config = ch.GetConfigFile();
             InitialChart();
+
+            // Add each legend to chart
+            foreach (var legend in _config.Legends)
+            {
+                Series series = new Series(legend.Name, ViewType.Point);
+                series.ArgumentScaleType = ScaleType.Numerical;
+                series.ArgumentDataMember = "CD";
+                series.ValueScaleType = ScaleType.Numerical;
+                series.ValueDataMembers.AddRange(new string[] { "MD" });
+                series.CrosshairEnabled = DevExpress.Utils.DefaultBoolean.False;
+
+                PointSeriesView seriesView = (PointSeriesView)series.View;
+                seriesView.PointMarkerOptions.Kind = _dicSeriesShape[legend.Shape];
+                seriesView.Color = System.Drawing.ColorTranslator.FromHtml(legend.Color);
+
+                chartControl.Series.Add(series);
+            }
         }
 
         #endregion
@@ -297,5 +382,61 @@ namespace NMap
             setting.ShowDialog();
         }
         #endregion
+
+        private void chartControl_MouseMove(object sender, MouseEventArgs e)
+        {
+
+        }
+
+        private void chartControl_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            //if (e.Button == MouseButtons.Left)
+            //{
+            //    ChartHitInfo hi = chartControl.CalcHitInfo(e.X, e.Y);
+
+            //    if (hi.SeriesPoint != null)
+            //    {
+            //        Series seriesPoint = (Series)hi.Series;
+            //        //DataRow[] rows = _dtbFlaws.Select();
+            //        //IEnumerable<DataRow> result = rows.Where(row => row["FlawID"].ToString().Equals(seriesPoint.Name));
+
+            //        //JobHelper.Job.SetOffline();
+            //        //FlawForm ff = new FlawForm(result.First(), _units);
+            //        //ff.ShowDialog();
+            //    }
+            //}
+            if (e.Button == MouseButtons.Left)
+            {
+                ChartHitInfo hi = chartControl.CalcHitInfo(e.X, e.Y);
+                SeriesPoint point = hi.SeriesPoint;
+
+                if (point != null)
+                {
+                    string condifion = string.Format("CD = {0} AND MD = {1}", point.Argument, point.Values.FirstOrDefault().ToString());
+                    DataRow flaw = _flawData.Select(condifion).FirstOrDefault();
+
+                    FlawForm flawForm = new FlawForm(_jobInfo.NumberOfStations, flaw);
+                    flawForm.ShowDialog();
+                    //string argument = "Argument: " + point.Argument.ToString();
+                    //string values = "Value(s): " + point.Values[0].ToString();
+
+                    //if (point.Values.Length > 1)
+                    //{
+                    //    for (int i = 1; i < point.Values.Length; i++)
+                    //    {
+                    //        values = values + ", " + point.Values[i].ToString();
+                    //    }
+                    //}
+
+                    //// Show the tooltip.
+                    //this.Text = argument + values;
+                    //MessageBox.Show(point.Argument.ToString() + ", " + point.Values[0].ToString());
+                }
+                else
+                {
+
+                }
+            }
+        }
     }
 }
