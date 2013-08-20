@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using WRPlugIn;
+using NMap.Helper;
+using NMap.Properties;
 
 namespace NMap
 {
@@ -14,23 +16,23 @@ namespace NMap
     {
         #region Loacal Variables
 
-        private int _numberOfStations;
         private DataRow _drFlaw;
         private PictureBox[] _pb;
         private double[] _pbRatio;
         private Image[] _srcImages;
-        //private List<NowUnit> _units;
+        private IList<IImageInfo> _imageList;
 
         #endregion
 
         #region Constructor
 
-        public FlawForm(int numOfStations, DataRow flaw)
+        public FlawForm(DataRow flaw)
         {
             InitializeComponent();
 
-            _numberOfStations = numOfStations;
             _drFlaw = flaw;
+            DataHelper dh = new DataHelper();
+            _imageList = dh.GetFlawImageFromDb(flaw);
         }
 
         #endregion
@@ -111,14 +113,14 @@ namespace NMap
 
         private void FlawForm_Load(object sender, EventArgs e)
         {
-            //Boolean isSelectedTab = false;
+            Boolean isSelectedTab = false;
             //// get current using unit
             //NowUnit ucd = _units.Find(x => x.ComponentName == "Flaw List CD");
             //NowUnit umd = _units.Find(x => x.ComponentName == "Flaw List MD");
             // set local variables.
-            _pb = new PictureBox[_numberOfStations];
-            _pbRatio = new double[_numberOfStations];
-            _srcImages = new Image[_numberOfStations];
+            _pb = new PictureBox[JobHelper.JobInfo.NumberOfStations];
+            _pbRatio = new double[JobHelper.JobInfo.NumberOfStations];
+            _srcImages = new Image[JobHelper.JobInfo.NumberOfStations];
             // initialize all labels
             lblFlawIDVal.Text = _drFlaw["FlawID"].ToString();
             lblFlawClassVal.Text = _drFlaw["FlawClass"].ToString();
@@ -133,7 +135,7 @@ namespace NMap
             lblWidthVal.Text = _drFlaw["Width"].ToString();
             lblAreaVal.Text = _drFlaw["Area"].ToString();
             // set about images
-            for (int i = 0; i < _numberOfStations; i++)
+            for (int i = 0; i < JobHelper.JobInfo.NumberOfStations; i++)
             {
                 tabImages.TabPages.Add("S" + ((i + 1).ToString()));
                 _pb[i] = new PictureBox();
@@ -146,37 +148,36 @@ namespace NMap
                 tabImages.TabPages[i].BackColor = Color.Transparent;
                 tabImages.TabPages[i].Tag = 100;  // Zoom Multiplier value.
             }
-            //// deal if images return null show no-image.
-            //if (!_drFlaw.IsNull("Images"))
-            //{
-            //    IList<IImageInfo> images = _drFlaw["Images"] as IList<IImageInfo>;
-            //    foreach (IImageInfo image in images)
-            //    {
-            //        _srcImages[image.Station] = image.Image;
-            //        _pbRatio[image.Station] = Init_Image(image.Image, tabImages.TabPages[image.Station], _pb[image.Station]);
-            //        if (!isSelectedTab)
-            //        {
-            //            tabImages.SelectedTab = tabImages.TabPages[image.Station];
-            //            isSelectedTab = true;
-            //        }
-            //    }
-            //    for (int i = 0; i < JobHelper.JobInfo.NumberOfStations; i++)
-            //    {
-            //        if (_srcImages[i] == null)
-            //        {
-            //            _srcImages[i] = Resources.NoImage;
-            //            _pbRatio[i] = Init_Image(Resources.NoImage, tabImages.TabPages[i], _pb[i]);
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    for (int i = 0; i < JobHelper.JobInfo.NumberOfStations; i++)
-            //    {
-            //        _srcImages[i] = Resources.NoImage;
-            //        _pbRatio[i] = Init_Image(Resources.NoImage, tabImages.TabPages[i], _pb[i]);
-            //    }
-            //}
+            // deal if images return null show no-image.
+            if (_imageList.Count > 0)
+            {
+                foreach (IImageInfo image in _imageList)
+                {
+                    _srcImages[image.Station] = image.Image;
+                    _pbRatio[image.Station] = Init_Image(image.Image, tabImages.TabPages[image.Station], _pb[image.Station]);
+                    if (!isSelectedTab)
+                    {
+                        tabImages.SelectedTab = tabImages.TabPages[image.Station];
+                        isSelectedTab = true;
+                    }
+                }
+                for (int i = 0; i < JobHelper.JobInfo.NumberOfStations; i++)
+                {
+                    if (_srcImages[i] == null)
+                    {
+                        _srcImages[i] = Resources.NoImage;
+                        _pbRatio[i] = Init_Image(Resources.NoImage, tabImages.TabPages[i], _pb[i]);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < JobHelper.JobInfo.NumberOfStations; i++)
+                {
+                    _srcImages[i] = Resources.NoImage;
+                    _pbRatio[i] = Init_Image(Resources.NoImage, tabImages.TabPages[i], _pb[i]);
+                }
+            }
         }
 
         public void pb_Click(object sender, MouseEventArgs e)

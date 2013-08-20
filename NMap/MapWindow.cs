@@ -18,7 +18,7 @@ using NMap.Model;
 namespace NMap
 {
     [Export(typeof(IWRPlugIn))]
-    public partial class MapWindow : UserControl, IWRPlugIn, IWRMapWindow, IOnFlaws, IOnJobLoaded, IOnJobStarted, IOnClassifyFlaw
+    public partial class MapWindow : UserControl, IWRPlugIn, IWRMapWindow, IOnFlaws, IOnJobLoaded, IOnJobStarted, IOnClassifyFlaw, IOnWebDBConnected
     {
         private Config _config = new Config() { Legends = new List<NMap.Model.Legend>() };
         private static string _xmlPath = Path.GetDirectoryName(
@@ -240,7 +240,11 @@ namespace NMap
 
         public void OnJobLoaded(IList<IFlawTypeName> flawTypes, IList<ILaneInfo> lanes, IList<ISeverityInfo> severityInfo, IJobInfo jobInfo)
         {
-            _jobInfo = jobInfo;
+            JobHelper.FlawTypes = flawTypes;
+            JobHelper.JobInfo = jobInfo;
+            JobHelper.Lanes = lanes;
+            JobHelper.SeverityInfo = severityInfo;
+
             btnSetting.Enabled = true;
             chartControl.Series.Clear();
             //InitialChart();
@@ -281,6 +285,8 @@ namespace NMap
 
         public void OnJobStarted(int jobKey)
         {
+            JobHelper.JobKey = jobKey;
+
             // Get config from xml file
             ConfigHelper ch = new ConfigHelper();
             _config = ch.GetConfigFile();
@@ -415,7 +421,7 @@ namespace NMap
                     string condifion = string.Format("CD = {0} AND MD = {1}", point.Argument, point.Values.FirstOrDefault().ToString());
                     DataRow flaw = _flawData.Select(condifion).FirstOrDefault();
 
-                    FlawForm flawForm = new FlawForm(_jobInfo.NumberOfStations, flaw);
+                    FlawForm flawForm = new FlawForm(flaw);
                     flawForm.ShowDialog();
                     //string argument = "Argument: " + point.Argument.ToString();
                     //string values = "Value(s): " + point.Values[0].ToString();
@@ -438,5 +444,21 @@ namespace NMap
                 }
             }
         }
+
+        #region IOnWebDBConnected 成員
+
+        public void OnWebDBConnected(IWebDBConnectionInfo info)
+        {
+            if (info.UseTrustedConnection == 1)
+            {
+                JobHelper.DbConnectString = String.Format("Data Source={0};Initial Catalog={1};Integrated Security=true;", info.ServerName, info.DatabaseName);
+            }
+            else
+            {
+                JobHelper.DbConnectString = String.Format("Data Source={0};Initial Catalog={1};User Id={2};Password={3};", info.ServerName, info.DatabaseName, info.UserName, info.Password);
+            }
+        }
+
+        #endregion
     }
 }
