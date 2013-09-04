@@ -31,7 +31,6 @@
             DevExpress.XtraCharts.SideBySideBarSeriesLabel sideBySideBarSeriesLabel1 = new DevExpress.XtraCharts.SideBySideBarSeriesLabel();
             this.chartControl = new DevExpress.XtraCharts.ChartControl();
             this.btnSetting = new System.Windows.Forms.Button();
-            this.btnStart = new System.Windows.Forms.Button();
             this.btnReset = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(sideBySideBarSeriesLabel1)).BeginInit();
@@ -50,11 +49,11 @@
             this.chartControl.Size = new System.Drawing.Size(620, 793);
             this.chartControl.TabIndex = 0;
             this.chartControl.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.chartControl_MouseDoubleClick);
-            this.chartControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chartControl_MouseMove);
             // 
             // btnSetting
             // 
             this.btnSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSetting.Enabled = false;
             this.btnSetting.Location = new System.Drawing.Point(560, 9);
             this.btnSetting.Name = "btnSetting";
             this.btnSetting.Size = new System.Drawing.Size(75, 23);
@@ -63,19 +62,9 @@
             this.btnSetting.UseVisualStyleBackColor = true;
             this.btnSetting.Click += new System.EventHandler(this.btnSetting_Click);
             // 
-            // btnStart
-            // 
-            this.btnStart.Location = new System.Drawing.Point(480, 9);
-            this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(75, 23);
-            this.btnStart.TabIndex = 2;
-            this.btnStart.Text = "Start";
-            this.btnStart.UseVisualStyleBackColor = true;
-            this.btnStart.Click += new System.EventHandler(this.btnStart_Click);
-            // 
             // btnReset
             // 
-            this.btnReset.Location = new System.Drawing.Point(399, 9);
+            this.btnReset.Location = new System.Drawing.Point(479, 9);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(75, 23);
             this.btnReset.TabIndex = 3;
@@ -88,7 +77,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.btnReset);
-            this.Controls.Add(this.btnStart);
             this.Controls.Add(this.btnSetting);
             this.Controls.Add(this.chartControl);
             this.Name = "MapWindow";
@@ -103,7 +91,6 @@
 
         private DevExpress.XtraCharts.ChartControl chartControl;
         private System.Windows.Forms.Button btnSetting;
-        private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Button btnReset;
 
     }

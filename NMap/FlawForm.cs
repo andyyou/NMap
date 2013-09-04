@@ -16,7 +16,10 @@ namespace NMap
     {
         #region Loacal Variables
 
+        private DataTable _flawData;
         private DataRow _drFlaw;
+        private decimal _currentCdConversion;
+        private decimal _currentMdConversion;
         private PictureBox[] _pb;
         private double[] _pbRatio;
         private Image[] _srcImages;
@@ -26,13 +29,29 @@ namespace NMap
 
         #region Constructor
 
-        public FlawForm(DataRow flaw)
+        public FlawForm(DataRow flaw, decimal currentCdConversion, decimal currentMdConversion)
         {
             InitializeComponent();
 
-            _drFlaw = flaw;
+            // Initialize datatable struct
+            _flawData = new DataTable();
+            _flawData.Columns.Add("FlawID", typeof(string));
+            _flawData.Columns.Add("FlawType", typeof(int));
+            _flawData.Columns.Add("FlawClass", typeof(string));
+            _flawData.Columns.Add("Area", typeof(string));
+            _flawData.Columns.Add("CD", typeof(double));
+            _flawData.Columns.Add("MD", typeof(double));
+            _flawData.Columns.Add("Width", typeof(double));
+            _flawData.Columns.Add("Length", typeof(double));
+
+            _flawData.ImportRow(flaw);
+            _drFlaw = _flawData.Rows[0];
+            _currentCdConversion = currentCdConversion;
+            _currentMdConversion = currentMdConversion;
+            _drFlaw["CD"] = Convert.ToDecimal(_drFlaw["CD"]) / _currentCdConversion;
+            _drFlaw["MD"] = Convert.ToDecimal(_drFlaw["MD"]) / _currentMdConversion;
             DataHelper dh = new DataHelper();
-            _imageList = dh.GetFlawImageFromDb(flaw);
+            _imageList = dh.GetFlawImageFromDb(_drFlaw);
         }
 
         #endregion
@@ -126,11 +145,11 @@ namespace NMap
             lblFlawClassVal.Text = _drFlaw["FlawClass"].ToString();
             lblFlawTypeVal.Text = _drFlaw["FlawType"].ToString();
             //double cd = Convert.ToDouble(_drFlaw["CD"]) * ucd.Conversion;
-            double cd = Convert.ToDouble(_drFlaw["CD"]);
-            lblCDVal.Text = cd.ToString();
+            decimal cd = Convert.ToDecimal(_drFlaw["CD"]) * _currentCdConversion;
+            lblCDVal.Text = cd.ToString("#0.000000");
             //double md = Convert.ToDouble(_drFlaw["MD"]) * umd.Conversion;
-            double md = Convert.ToDouble(_drFlaw["MD"]);
-            lblMDVal.Text = md.ToString();
+            decimal md = Convert.ToDecimal(_drFlaw["MD"]) * _currentMdConversion;
+            lblMDVal.Text = md.ToString("#0.000000");
             lblLengthVal.Text = _drFlaw["Length"].ToString();
             lblWidthVal.Text = _drFlaw["Width"].ToString();
             lblAreaVal.Text = _drFlaw["Area"].ToString();

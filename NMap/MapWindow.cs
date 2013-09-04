@@ -14,11 +14,14 @@ using System.Reflection;
 using System.Xml.Linq;
 using NMap.Helper;
 using NMap.Model;
+using System.Xml;
+using System.Xml.XPath;
+using System.Text.RegularExpressions;
 
 namespace NMap
 {
     [Export(typeof(IWRPlugIn))]
-    public partial class MapWindow : UserControl, IWRPlugIn, IWRMapWindow, IOnFlaws, IOnJobLoaded, IOnJobStarted, IOnClassifyFlaw, IOnWebDBConnected
+    public partial class MapWindow : UserControl, IWRPlugIn, IWRMapWindow, IOnFlaws, IOnJobLoaded, IOnJobStarted, IOnClassifyFlaw, IOnWebDBConnected, IOnUnitsChanged
     {
         private Config _config = new Config() { Legends = new List<NMap.Model.Legend>() };
         private static string _xmlPath = Path.GetDirectoryName(
@@ -35,7 +38,11 @@ namespace NMap
             { "Star", MarkerKind.Star }
         };
         private DataTable _flawData;
-        private IJobInfo _jobInfo;
+
+        private List<Unit> _units;
+        private string _xmlUnitsPath;
+        private Unit _currentFlawMapCD;
+        private Unit _currentFlawMapMD;
 
         public MapWindow()
         {
@@ -74,11 +81,11 @@ namespace NMap
             //diagram.AxisX.Range.MaxValue = 100;
             //diagram.AxisX.Range.ScrollingRange.SetMinMaxValues(0, );
             diagram.AxisX.NumericOptions.Format = NumericFormat.Number;
-            diagram.AxisX.NumericOptions.Precision = 6;
+            diagram.AxisX.NumericOptions.Precision = 2;
             diagram.AxisX.Reverse = _config.CDInverse;
             diagram.AxisX.GridLines.Visible = _config.ShowMapGrid == "On" ? true : false;
             diagram.AxisX.GridLines.LineStyle.DashStyle = DashStyle.Dash;
-            diagram.AxisX.GridSpacingAuto = false;
+            //diagram.AxisX.GridSpacingAuto = false;
 
             // Setting AxisY format
             diagram.EnableAxisYZooming = true;
@@ -87,11 +94,11 @@ namespace NMap
             //diagram.AxisY.Range.MaxValue = ;
             //diagram.AxisY.Range.ScrollingRange.SetMinMaxValues(0, );
             diagram.AxisY.NumericOptions.Format = NumericFormat.Number;
-            diagram.AxisY.NumericOptions.Precision = 6;
+            diagram.AxisY.NumericOptions.Precision = 2;
             diagram.AxisY.Reverse = _config.MDInverse;
             diagram.AxisY.GridLines.Visible = _config.ShowMapGrid == "On" ? true : false;
             diagram.AxisY.GridLines.LineStyle.DashStyle = DashStyle.Dash;
-            diagram.AxisY.GridSpacingAuto = false;
+            //diagram.AxisY.GridSpacingAuto = false;
 
             if (_config.BottomAxes == "CD")
             {
@@ -103,6 +110,7 @@ namespace NMap
             }
 
             chartControl.Series.Clear();
+            _flawData.Clear();
         }
 
         private DataTable QueryDataTable(DataTable dt, string condition, string sortstr)
@@ -115,6 +123,59 @@ namespace NMap
                 newdt.ImportRow((DataRow)dr[i]);
             }
             return newdt;
+        }
+
+        // 將xml單位換算值儲存至 _units 物件
+        private void LoadXmlToUnitsObject(string xml)
+        {
+            _units = new List<Unit>();
+            // load xml data to dictionary.
+            XmlDocument document = new XmlDocument();
+            document.Load(xml);
+            XPathNavigator navigator = document.CreateNavigator();
+            XPathNodeIterator node = navigator.Select("//Components/Component");
+
+            while (node.MoveNext())
+            {
+                int unitIndex = Convert.ToInt32(node.Current.SelectSingleNode("@unit").Value) + 1; // Xpath's index start from 1.
+                string expr_conversion = String.Format("//Units/Unit[{0}]/@conversion", unitIndex);
+                string expr_symbol = String.Format("//Units/Unit[{0}]/@symbol", unitIndex);
+                decimal convertion = Convert.ToDecimal(navigator.SelectSingleNode(expr_conversion).Value);
+                string symbol = navigator.SelectSingleNode(expr_symbol).Value;
+                string componentName = node.Current.SelectSingleNode("@name").Value;
+                Unit unit = new Unit(componentName, symbol, convertion);
+                _units.Add(unit);
+            }
+        }
+
+        private void SetScrollingRange()
+        {
+            double scrollingRangeMax;
+            double scrollingRangeMin;
+            XYDiagram diagram = (XYDiagram)chartControl.Diagram;
+            diagram.AxisY.Range.Auto = false;
+            if (_currentFlawMapMD.Symbol.Equals("m"))
+            {
+                scrollingRangeMax = Convert.ToDouble(_flawData.Rows[_flawData.Rows.Count - 1]["MD"]) + 0.1;
+                scrollingRangeMin = scrollingRangeMax - 0.2 < 0 ? 0 : (scrollingRangeMax - 0.2);
+
+                diagram.AxisX.Range.MaxValue = Convert.ToDouble(_flawData.Rows[_flawData.Rows.Count - 1]["MD"]) + 0.1;
+            }
+            else if (_currentFlawMapMD.Symbol.Equals("mm"))
+            {
+                scrollingRangeMax = Convert.ToDouble(_flawData.Rows[_flawData.Rows.Count - 1]["MD"]) + 100;
+                scrollingRangeMin = scrollingRangeMax - 200 < 0 ? 0 : (scrollingRangeMax - 200);
+
+                diagram.AxisX.Range.MaxValue = Convert.ToDouble(_flawData.Rows[_flawData.Rows.Count - 1]["MD"]) + 100;
+            }
+            else
+            {
+                scrollingRangeMax = Convert.ToDouble(_flawData.Rows[_flawData.Rows.Count - 1]["MD"]) + 1;
+                scrollingRangeMin = scrollingRangeMax - 2 < 0 ? 0 : (scrollingRangeMax - 2);
+
+                diagram.AxisX.Range.MaxValue = Convert.ToDouble(_flawData.Rows[_flawData.Rows.Count - 1]["MD"]) + 1;
+            }
+            diagram.AxisY.Range.SetInternalMinMaxValues(scrollingRangeMin, scrollingRangeMax);
         }
 
         #endregion
@@ -149,7 +210,10 @@ namespace NMap
 
         public void Initialize(string unitsXMLPath)
         {
-            // No Imemented;
+            _xmlUnitsPath = unitsXMLPath;
+            LoadXmlToUnitsObject(unitsXMLPath); // Save units value to "_units"
+            _currentFlawMapCD = _units.Find(x => x.ComponentName == "Flaw Map CD");
+            _currentFlawMapMD = _units.Find(x => x.ComponentName == "Flaw Map MD");
         }
 
         public void SetPosition(int w, int h)
@@ -199,8 +263,8 @@ namespace NMap
                 row["FlawType"] = flaw.FlawType;
                 row["FlawClass"] = flaw.FlawClass;
                 row["Area"] = flaw.Area;
-                row["CD"] = flaw.CD;
-                row["MD"] = flaw.MD;
+                row["CD"] = Convert.ToDecimal(flaw.CD) * _currentFlawMapCD.Conversion;
+                row["MD"] = Convert.ToDecimal(flaw.MD) * _currentFlawMapMD.Conversion;
                 row["Width"] = flaw.Width;
                 row["Length"] = flaw.Length;
                 _flawData.Rows.Add(row);
@@ -210,6 +274,9 @@ namespace NMap
             {
                 series.DataSource = QueryDataTable(_flawData, "FlawClass = '" + series.Name + "'", ""); ;
             }
+
+            SetScrollingRange();
+            //diagram.AxisY.Range.ScrollingRange.MaxValue = diagram.AxisY.Range.MaxValue;
 
             // Add each legend to chart
             //List<Series> seriesList = new List<Series>();
@@ -285,6 +352,7 @@ namespace NMap
 
         public void OnJobStarted(int jobKey)
         {
+            btnSetting.Enabled = false;
             JobHelper.JobKey = jobKey;
 
             // Get config from xml file
@@ -303,6 +371,7 @@ namespace NMap
                 series.CrosshairEnabled = DevExpress.Utils.DefaultBoolean.False;
 
                 PointSeriesView seriesView = (PointSeriesView)series.View;
+                seriesView.PointMarkerOptions.Size = 15;
                 seriesView.PointMarkerOptions.Kind = _dicSeriesShape[legend.Shape];
                 seriesView.Color = System.Drawing.ColorTranslator.FromHtml(legend.Color);
 
@@ -312,19 +381,76 @@ namespace NMap
 
         #endregion
 
+        #region IOnWebDBConnected 成員
+
+        public void OnWebDBConnected(IWebDBConnectionInfo info)
+        {
+            if (info.UseTrustedConnection == 1)
+            {
+                JobHelper.DbConnectString = String.Format("Data Source={0};Initial Catalog={1};Integrated Security=true;", info.ServerName, info.DatabaseName);
+            }
+            else
+            {
+                JobHelper.DbConnectString = String.Format("Data Source={0};Initial Catalog={1};User Id={2};Password={3};", info.ServerName, info.DatabaseName, info.UserName, info.Password);
+            }
+        }
+
+        #endregion
+
+        #region IOnUnitsChanged 成員
+
+        public void OnUnitsChanged()
+        {
+            if (!String.IsNullOrEmpty(_xmlUnitsPath))
+            {
+                // 讀取單位及換算資料
+                LoadXmlToUnitsObject(_xmlUnitsPath);
+                Unit newFlawMapCD = _units.Find(x => x.ComponentName == "Flaw Map CD");
+                Unit newFlawMapMD = _units.Find(x => x.ComponentName == "Flaw Map MD");
+
+                // 重新計算 map 上各點座標資料
+                foreach (DataRow row in _flawData.Rows)
+                {
+                    row["CD"] = Convert.ToDecimal(row["CD"]) / _currentFlawMapCD.Conversion * newFlawMapCD.Conversion;
+                    row["MD"] = Convert.ToDecimal(row["MD"]) / _currentFlawMapMD.Conversion * newFlawMapMD.Conversion;
+                }
+
+                _currentFlawMapCD = newFlawMapCD;
+                _currentFlawMapMD = newFlawMapMD;
+
+                chartControl.Series.Clear();
+                // Add each legend to chart
+                foreach (var legend in _config.Legends)
+                {
+                    Series series = new Series(legend.Name, ViewType.Point);
+                    series.ArgumentScaleType = ScaleType.Numerical;
+                    series.ArgumentDataMember = "CD";
+                    series.ValueScaleType = ScaleType.Numerical;
+                    series.ValueDataMembers.AddRange(new string[] { "MD" });
+                    series.CrosshairEnabled = DevExpress.Utils.DefaultBoolean.False;
+
+                    PointSeriesView seriesView = (PointSeriesView)series.View;
+                    seriesView.PointMarkerOptions.Size = 15;
+                    seriesView.PointMarkerOptions.Kind = _dicSeriesShape[legend.Shape];
+                    seriesView.Color = System.Drawing.ColorTranslator.FromHtml(legend.Color);
+
+                    chartControl.Series.Add(series);
+                }
+
+                foreach (Series series in chartControl.Series)
+                {
+                    series.DataSource = QueryDataTable(_flawData, "FlawClass = '" + series.Name + "'", ""); ;
+                }
+
+                SetScrollingRange();
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Events 
-
-        /// <summary>
-        /// 測試用
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btnStart_Click(object sender, EventArgs e)
-        {
-            InitialChart();
-        }
 
         /// <summary>
         /// 調整 Map Zoom 回復 1 : 1
@@ -349,68 +475,16 @@ namespace NMap
         /// <param name="e"></param>
         private void btnSetting_Click(object sender, EventArgs e)
         {
-            //Random rnd = new Random();
-            //Series series = new Series("", ViewType.Point);
-            //series.Points.Add(new SeriesPoint(rnd.Next(0, 2), rnd.Next(0, 2)));
-            //series.ArgumentScaleType = ScaleType.Numerical;
-            //series.ValueScaleType = ScaleType.Numerical;
-            //chartControl.Series.Add(series);
-            // var obj = JsonConvert.SerializeObject(_legend, Formatting.Indented);
-            #region Read XML
-
+            // Read XML
             ConfigHelper ch = new ConfigHelper();
             _config = ch.GetConfigFile();
-            //XDocument xdoc = XDocument.Load(_xmlPath);
-            //// IEnumerable<XElement> elLegends =   from el in doc.Elements() select el;
-            //// Get map setting
-            //XElement xmlMap = xdoc.Root.Elements("Map").FirstOrDefault();
-            //_config.ShowMapGrid = xmlMap.Attribute("ShowGrid").Value;
-            //_config.BottomAxes = xmlMap.Attribute("BottomAxes").Value;
-            //_config.MDInverse = Convert.ToBoolean(xmlMap.Attribute("MDInverse").Value);
-            //_config.CDInverse = Convert.ToBoolean(xmlMap.Attribute("CDInverse").Value);
 
-            //// Get legend steeing
-            //foreach (var item in _config.Legends)
-            //{
-            //    XElement xmlLegend = xdoc.Root.Elements("Legend").Where(el => (string)el.Attribute("ClassID") == item.ClassID).FirstOrDefault();
-            //    if (xmlLegend != null)
-            //    {
-            //        item.Shape = xmlLegend.Attribute("Shape").Value;
-            //        item.Color = xmlLegend.Attribute("Color").Value;
-            //    }
-            //}
-
-            #endregion
-
-            //Settings setting = new Settings(_legends);
-            //setting.ShowDialog();
             Settings setting = new Settings(_config);
             setting.ShowDialog();
-        }
-        #endregion
-
-        private void chartControl_MouseMove(object sender, MouseEventArgs e)
-        {
-
         }
 
         private void chartControl_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            //if (e.Button == MouseButtons.Left)
-            //{
-            //    ChartHitInfo hi = chartControl.CalcHitInfo(e.X, e.Y);
-
-            //    if (hi.SeriesPoint != null)
-            //    {
-            //        Series seriesPoint = (Series)hi.Series;
-            //        //DataRow[] rows = _dtbFlaws.Select();
-            //        //IEnumerable<DataRow> result = rows.Where(row => row["FlawID"].ToString().Equals(seriesPoint.Name));
-
-            //        //JobHelper.Job.SetOffline();
-            //        //FlawForm ff = new FlawForm(result.First(), _units);
-            //        //ff.ShowDialog();
-            //    }
-            //}
             if (e.Button == MouseButtons.Left)
             {
                 ChartHitInfo hi = chartControl.CalcHitInfo(e.X, e.Y);
@@ -418,44 +492,21 @@ namespace NMap
 
                 if (point != null)
                 {
-                    string condifion = string.Format("CD = {0} AND MD = {1}", point.Argument, point.Values.FirstOrDefault().ToString());
+                    double cd = Convert.ToDouble(point.Argument);
+                    double md = Convert.ToDouble(point.Values.FirstOrDefault());
+                    int cdNumCount = Regex.Match(cd.ToString(), @"(?<=\.)\d+").Value.ToCharArray().Count();
+                    int mdNumCount = Regex.Match(md.ToString(), @"(?<=\.)\d+").Value.ToCharArray().Count();
+
+                    string condifion = string.Format("CD = {0} AND MD = {1}", cd.ToString("F" + cdNumCount.ToString()), md.ToString("F" + mdNumCount.ToString()));
                     DataRow flaw = _flawData.Select(condifion).FirstOrDefault();
 
-                    FlawForm flawForm = new FlawForm(flaw);
+                    FlawForm flawForm = new FlawForm(flaw, _currentFlawMapCD.Conversion, _currentFlawMapMD.Conversion);
                     flawForm.ShowDialog();
-                    //string argument = "Argument: " + point.Argument.ToString();
-                    //string values = "Value(s): " + point.Values[0].ToString();
-
-                    //if (point.Values.Length > 1)
-                    //{
-                    //    for (int i = 1; i < point.Values.Length; i++)
-                    //    {
-                    //        values = values + ", " + point.Values[i].ToString();
-                    //    }
-                    //}
-
-                    //// Show the tooltip.
-                    //this.Text = argument + values;
-                    //MessageBox.Show(point.Argument.ToString() + ", " + point.Values[0].ToString());
                 }
                 else
                 {
 
                 }
-            }
-        }
-
-        #region IOnWebDBConnected 成員
-
-        public void OnWebDBConnected(IWebDBConnectionInfo info)
-        {
-            if (info.UseTrustedConnection == 1)
-            {
-                JobHelper.DbConnectString = String.Format("Data Source={0};Initial Catalog={1};Integrated Security=true;", info.ServerName, info.DatabaseName);
-            }
-            else
-            {
-                JobHelper.DbConnectString = String.Format("Data Source={0};Initial Catalog={1};User Id={2};Password={3};", info.ServerName, info.DatabaseName, info.UserName, info.Password);
             }
         }
 
