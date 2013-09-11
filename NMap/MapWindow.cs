@@ -78,7 +78,8 @@ namespace NMap
             diagram.EnableAxisXZooming = true;
             diagram.EnableAxisXScrolling = true;
             diagram.AxisX.Range.MinValue = 0;
-            //diagram.AxisX.Range.MaxValue = 100;
+            //diagram.AxisX.Range.MaxValue = ;
+            diagram.AxisX.Range.MaxValue = Convert.ToDecimal(JobHelper.Lanes.LastOrDefault().StopCD) * _currentFlawMapCD.Conversion;
             //diagram.AxisX.Range.ScrollingRange.SetMinMaxValues(0, );
             diagram.AxisX.NumericOptions.Format = NumericFormat.Number;
             diagram.AxisX.NumericOptions.Precision = 2;
@@ -86,6 +87,8 @@ namespace NMap
             diagram.AxisX.GridLines.Visible = _config.ShowMapGrid == "On" ? true : false;
             diagram.AxisX.GridLines.LineStyle.DashStyle = DashStyle.Dash;
             //diagram.AxisX.GridSpacingAuto = false;
+            diagram.AxisX.Range.Auto = true;
+            diagram.AxisX.Range.ScrollingRange.Auto = true;
 
             // Setting AxisY format
             diagram.EnableAxisYZooming = true;
@@ -158,22 +161,16 @@ namespace NMap
             {
                 scrollingRangeMax = Convert.ToDouble(_flawData.Rows[_flawData.Rows.Count - 1]["MD"]) + 0.1;
                 scrollingRangeMin = scrollingRangeMax - 0.2 < 0 ? 0 : (scrollingRangeMax - 0.2);
-
-                diagram.AxisX.Range.MaxValue = Convert.ToDouble(_flawData.Rows[_flawData.Rows.Count - 1]["MD"]) + 0.1;
             }
             else if (_currentFlawMapMD.Symbol.Equals("mm"))
             {
                 scrollingRangeMax = Convert.ToDouble(_flawData.Rows[_flawData.Rows.Count - 1]["MD"]) + 100;
                 scrollingRangeMin = scrollingRangeMax - 200 < 0 ? 0 : (scrollingRangeMax - 200);
-
-                diagram.AxisX.Range.MaxValue = Convert.ToDouble(_flawData.Rows[_flawData.Rows.Count - 1]["MD"]) + 100;
             }
             else
             {
                 scrollingRangeMax = Convert.ToDouble(_flawData.Rows[_flawData.Rows.Count - 1]["MD"]) + 1;
                 scrollingRangeMin = scrollingRangeMax - 2 < 0 ? 0 : (scrollingRangeMax - 2);
-
-                diagram.AxisX.Range.MaxValue = Convert.ToDouble(_flawData.Rows[_flawData.Rows.Count - 1]["MD"]) + 1;
             }
             diagram.AxisY.Range.SetInternalMinMaxValues(scrollingRangeMin, scrollingRangeMax);
         }
@@ -443,6 +440,12 @@ namespace NMap
                 }
 
                 SetScrollingRange();
+
+                XYDiagram diagram = (XYDiagram)chartControl.Diagram;
+                diagram.AxisX.Range.MinValue = 0;
+                diagram.AxisX.Range.MaxValue = Convert.ToDecimal(JobHelper.Lanes.LastOrDefault().StopCD) / _currentFlawMapCD.Conversion * newFlawMapCD.Conversion;
+                diagram.AxisX.Range.Auto = true;
+                diagram.AxisX.Range.ScrollingRange.Auto = true;
             }
         }
 
@@ -463,8 +466,8 @@ namespace NMap
             diagram.AxisX.Range.Auto = true;
             diagram.AxisX.Range.ScrollingRange.Auto = true;
             //
-            diagram.AxisX.Range.Auto = false;
-            diagram.AxisX.Range.ScrollingRange.Auto = false;
+            //diagram.AxisX.Range.Auto = false;
+            //diagram.AxisX.Range.ScrollingRange.Auto = false;
 
         }
 
