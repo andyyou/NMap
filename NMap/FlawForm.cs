@@ -39,10 +39,10 @@ namespace NMap
             _flawData.Columns.Add("FlawType", typeof(int));
             _flawData.Columns.Add("FlawClass", typeof(string));
             _flawData.Columns.Add("Area", typeof(string));
-            _flawData.Columns.Add("CD", typeof(double));
-            _flawData.Columns.Add("MD", typeof(double));
-            _flawData.Columns.Add("Width", typeof(double));
-            _flawData.Columns.Add("Length", typeof(double));
+            _flawData.Columns.Add("CD", typeof(decimal));
+            _flawData.Columns.Add("MD", typeof(decimal));
+            _flawData.Columns.Add("Width", typeof(decimal));
+            _flawData.Columns.Add("Length", typeof(decimal));
 
             _flawData.ImportRow(flaw);
             _drFlaw = _flawData.Rows[0];

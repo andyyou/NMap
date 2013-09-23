@@ -54,10 +54,10 @@ namespace NMap
             _flawData.Columns.Add("FlawType", typeof(int));
             _flawData.Columns.Add("FlawClass", typeof(string));
             _flawData.Columns.Add("Area", typeof(string));
-            _flawData.Columns.Add("CD", typeof(double));
-            _flawData.Columns.Add("MD", typeof(double));
-            _flawData.Columns.Add("Width", typeof(double));
-            _flawData.Columns.Add("Length", typeof(double));
+            _flawData.Columns.Add("CD", typeof(decimal));
+            _flawData.Columns.Add("MD", typeof(decimal));
+            _flawData.Columns.Add("Width", typeof(decimal));
+            _flawData.Columns.Add("Length", typeof(decimal));
         }
 
         #region Refactoring Method
@@ -262,8 +262,8 @@ namespace NMap
                 row["Area"] = flaw.Area;
                 row["CD"] = Convert.ToDecimal(flaw.CD) * _currentFlawMapCD.Conversion;
                 row["MD"] = Convert.ToDecimal(flaw.MD) * _currentFlawMapMD.Conversion;
-                row["Width"] = flaw.Width;
-                row["Length"] = flaw.Length;
+                row["Width"] = Convert.ToDecimal(flaw.Width);
+                row["Length"] = Convert.ToDecimal(flaw.Length);
                 _flawData.Rows.Add(row);
             }
 
@@ -325,7 +325,11 @@ namespace NMap
 
         public void OnSetFlawLegend(List<FlawLegend> legend)
         {
-            _config.Legends.Clear();
+            ConfigHelper ch = new ConfigHelper();
+            Config configFile = ch.GetConfigFile();
+            Config newConfig = new Config() { Legends = new List<NMap.Model.Legend>() };
+
+            List<NMap.Model.Legend> mcsLegends = new List<NMap.Model.Legend>();
             foreach (var item in legend)
             {
                 NMap.Model.Legend l = new NMap.Model.Legend();
@@ -334,13 +338,62 @@ namespace NMap
                               ColorTranslator.FromWin32((int)item.Color).R,
                               ColorTranslator.FromWin32((int)item.Color).G,
                               ColorTranslator.FromWin32((int)item.Color).B);
+                l.Shape = "Circle";
                 l.Name = item.Name;
                 l.OriginLegend = item;
-                _config.Legends.Add(l);
+                mcsLegends.Add(l);
             }
+
+            // Compare legends in config file and mcs file
+            if (configFile.Legends.Count() != 0)
+            {
+                if (configFile.Legends.Count() == mcsLegends.Count())
+                {
+                    int i = 0;
+                    foreach (var item in mcsLegends)
+                    {
+                        configFile.Legends[i].ClassID = item.ClassID;
+                        configFile.Legends[i].Name = item.Name;
+                        i++;
+                    }
+                }
+                else if (configFile.Legends.Count() > mcsLegends.Count())
+                {
+                    int i = 0;
+                    foreach (var item in mcsLegends)
+                    {
+                        configFile.Legends[i].ClassID = item.ClassID;
+                        configFile.Legends[i].Name = item.Name;
+                        i++;
+                    }
+                    configFile.Legends.RemoveRange(i, configFile.Legends.Count() - i);
+                }
+                else
+                {
+                    int i = 0;
+                    int legendQuantity = configFile.Legends.Count();
+                    foreach (var item in mcsLegends)
+                    {
+                        if (legendQuantity > i)
+                        {
+                            configFile.Legends[i].ClassID = item.ClassID;
+                            configFile.Legends[i].Name = item.Name;
+                        }
+                        else
+                        {
+                            configFile.Legends.Add(item);
+                        }
+                        i++;
+                    }
+                }
+            }
+            else
+            {
+                configFile.Legends = mcsLegends;
+            }
+
             // Reset config
-            ConfigHelper ch = new ConfigHelper();
-            ch.CreateConfigFile(_config.Legends);
+            ch.CreateConfigFile(configFile);
         }
 
         #endregion
@@ -495,12 +548,10 @@ namespace NMap
 
                 if (point != null)
                 {
-                    double cd = Convert.ToDouble(point.Argument);
-                    double md = Convert.ToDouble(point.Values.FirstOrDefault());
-                    int cdNumCount = Regex.Match(cd.ToString(), @"(?<=\.)\d+").Value.ToCharArray().Count();
-                    int mdNumCount = Regex.Match(md.ToString(), @"(?<=\.)\d+").Value.ToCharArray().Count();
+                    decimal cd = Convert.ToDecimal(point.Argument);
+                    decimal md = Convert.ToDecimal(point.Values.FirstOrDefault());
 
-                    string condifion = string.Format("CD = {0} AND MD = {1}", cd.ToString("F" + cdNumCount.ToString()), md.ToString("F" + mdNumCount.ToString()));
+                    string condifion = string.Format("CD = {0} AND MD = {1}", cd, md);
                     DataRow flaw = _flawData.Select(condifion).FirstOrDefault();
 
                     FlawForm flawForm = new FlawForm(flaw, _currentFlawMapCD.Conversion, _currentFlawMapMD.Conversion);

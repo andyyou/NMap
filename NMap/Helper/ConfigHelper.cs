@@ -16,7 +16,7 @@ namespace NMap.Helper
                                               @"\..\Parameter Files\NMap";
         private static string _xmlPath = _xmlDirectory + @"\legends.xml";
 
-        public void CreateConfigFile(List<Legend> legend)
+        public void CreateConfigFile(Config config)
         {
             XDocument xdoc = new XDocument();
             xdoc.Declaration = new XDeclaration("1.0", "utf-8", "no"); 
@@ -24,19 +24,19 @@ namespace NMap.Helper
             XElement root = new XElement("Config");
 
             XElement element = new XElement("Map");
-            element.SetAttributeValue("ShowGrid", "On");
-            element.SetAttributeValue("BottomAxes", "CD");
-            element.SetAttributeValue("MDInverse", false);
-            element.SetAttributeValue("CDInverse", false);
+            element.SetAttributeValue("ShowGrid", config.ShowMapGrid == null ? "On" : config.ShowMapGrid);
+            element.SetAttributeValue("BottomAxes", config.BottomAxes == null ? "CD" : config.BottomAxes);
+            element.SetAttributeValue("MDInverse", config.MDInverse);
+            element.SetAttributeValue("CDInverse", config.CDInverse);
             root.Add(element);
 
-            foreach (var item in legend)
+            foreach (var item in config.Legends)
             {
                 XElement el = new XElement("Legend");
                 el.SetAttributeValue("ClassID", item.ClassID);
                 el.SetAttributeValue("Name", item.Name);
                 el.SetAttributeValue("Color", item.Color);
-                el.SetAttributeValue("Shape", "Circle");
+                el.SetAttributeValue("Shape", item.Shape);
                 root.Add(el);
             }
             xdoc.Add(root);
@@ -49,6 +49,12 @@ namespace NMap.Helper
 
         public Config GetConfigFile()
         {
+            // Check config exist
+            if (!Directory.Exists(_xmlDirectory) || !File.Exists(_xmlPath))
+            {
+                return new Config() { Legends = new List<Legend>() };
+            }
+
             Config config = new Config() { Legends = new List<Legend>() };
 
             XDocument xdoc = XDocument.Load(_xmlPath);
