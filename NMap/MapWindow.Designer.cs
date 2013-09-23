@@ -77,6 +77,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = global::NMap.Properties.Resources.BrushedSteel00;
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnSetting);
             this.Controls.Add(this.chartControl);

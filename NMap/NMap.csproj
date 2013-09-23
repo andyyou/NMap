@@ -43,7 +43,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition, Version=2010.2.11.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Web Ranger\Web Inspector\System.ComponentModel.Composition.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Web Ranger\Web Inspector\System.ComponentModel.Composition.dll</HintPath>
     </Reference>
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -60,7 +60,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="WRPlugIn, Version=1.8.1.336, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\Web Ranger\Web Inspector\WRPlugIn.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Web Ranger\Web Inspector\WRPlugIn.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -134,10 +134,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Lib\Newtonsoft.Json.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Resources\NoImage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\BrushedSteel00.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

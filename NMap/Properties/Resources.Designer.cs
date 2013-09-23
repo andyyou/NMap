@@ -60,6 +60,13 @@ namespace NMap.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap BrushedSteel00 {
+            get {
+                object obj = ResourceManager.GetObject("BrushedSteel00", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap NoImage {
             get {
                 object obj = ResourceManager.GetObject("NoImage", resourceCulture);
