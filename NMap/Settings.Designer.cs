@@ -39,6 +39,10 @@
             this.gbSeriesSetting = new System.Windows.Forms.GroupBox();
             this.dgvFlawLegends = new System.Windows.Forms.DataGridView();
             this.btnSave = new System.Windows.Forms.Button();
+            this.lblBackground = new System.Windows.Forms.Label();
+            this.lblGrid = new System.Windows.Forms.Label();
+            this.lblBackgroundColor = new System.Windows.Forms.Label();
+            this.lblGridColor = new System.Windows.Forms.Label();
             this.grbMapSettings.SuspendLayout();
             this.gbSeriesSetting.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFlawLegends)).BeginInit();
@@ -56,6 +60,10 @@
             // 
             // grbMapSettings
             // 
+            this.grbMapSettings.Controls.Add(this.lblGridColor);
+            this.grbMapSettings.Controls.Add(this.lblBackgroundColor);
+            this.grbMapSettings.Controls.Add(this.lblGrid);
+            this.grbMapSettings.Controls.Add(this.lblBackground);
             this.grbMapSettings.Controls.Add(this.cmbShowMapGrid);
             this.grbMapSettings.Controls.Add(this.chkCDInverse);
             this.grbMapSettings.Controls.Add(this.chkMDInverse);
@@ -167,6 +175,42 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
+            // lblBackground
+            // 
+            this.lblBackground.AutoSize = true;
+            this.lblBackground.Location = new System.Drawing.Point(257, 50);
+            this.lblBackground.Name = "lblBackground";
+            this.lblBackground.Size = new System.Drawing.Size(75, 12);
+            this.lblBackground.TabIndex = 8;
+            this.lblBackground.Text = "Background：";
+            // 
+            // lblGrid
+            // 
+            this.lblGrid.AutoSize = true;
+            this.lblGrid.Location = new System.Drawing.Point(363, 50);
+            this.lblGrid.Name = "lblGrid";
+            this.lblGrid.Size = new System.Drawing.Size(38, 12);
+            this.lblGrid.TabIndex = 9;
+            this.lblGrid.Text = "Grid：";
+            // 
+            // lblBackgroundColor
+            // 
+            this.lblBackgroundColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblBackgroundColor.Location = new System.Drawing.Point(334, 50);
+            this.lblBackgroundColor.Name = "lblBackgroundColor";
+            this.lblBackgroundColor.Size = new System.Drawing.Size(12, 12);
+            this.lblBackgroundColor.TabIndex = 10;
+            this.lblBackgroundColor.Click += new System.EventHandler(this.lblBackgroundColor_Click);
+            // 
+            // lblGridColor
+            // 
+            this.lblGridColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblGridColor.Location = new System.Drawing.Point(403, 50);
+            this.lblGridColor.Name = "lblGridColor";
+            this.lblGridColor.Size = new System.Drawing.Size(12, 12);
+            this.lblGridColor.TabIndex = 11;
+            this.lblGridColor.Click += new System.EventHandler(this.lblGridColor_Click);
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -201,5 +245,9 @@
         private System.Windows.Forms.DataGridView dgvFlawLegends;
         private System.Windows.Forms.ComboBox cmbShowMapGrid;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Label lblGridColor;
+        private System.Windows.Forms.Label lblBackgroundColor;
+        private System.Windows.Forms.Label lblGrid;
+        private System.Windows.Forms.Label lblBackground;
     }
 }

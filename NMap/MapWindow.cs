@@ -68,7 +68,7 @@ namespace NMap
         private void InitialChart()
         {
             chartControl.RuntimeHitTesting = true;
-            chartControl.Legend.Visible = false;
+            chartControl.Legend.Visible = true;
 
             Series series = new Series();
             chartControl.Series.Add(series);
@@ -86,6 +86,9 @@ namespace NMap
             diagram.AxisX.Reverse = _config.CDInverse;
             diagram.AxisX.GridLines.Visible = _config.ShowMapGrid == "On" ? true : false;
             diagram.AxisX.GridLines.LineStyle.DashStyle = DashStyle.Dash;
+            diagram.AxisX.Color = System.Drawing.ColorTranslator.FromHtml(_config.GridColor);
+            diagram.AxisX.GridLines.Color = System.Drawing.ColorTranslator.FromHtml(_config.GridColor);
+            diagram.AxisX.Label.EndText = " " + _currentFlawMapCD.Symbol;
             //diagram.AxisX.GridSpacingAuto = false;
             diagram.AxisX.Range.Auto = true;
             diagram.AxisX.Range.ScrollingRange.Auto = true;
@@ -101,6 +104,9 @@ namespace NMap
             diagram.AxisY.Reverse = _config.MDInverse;
             diagram.AxisY.GridLines.Visible = _config.ShowMapGrid == "On" ? true : false;
             diagram.AxisY.GridLines.LineStyle.DashStyle = DashStyle.Dash;
+            diagram.AxisY.Color = System.Drawing.ColorTranslator.FromHtml(_config.GridColor);
+            diagram.AxisY.GridLines.Color = System.Drawing.ColorTranslator.FromHtml(_config.GridColor);
+            diagram.AxisY.Label.EndText = " " + _currentFlawMapMD.Symbol;
             //diagram.AxisY.GridSpacingAuto = false;
 
             if (_config.BottomAxes == "CD")
@@ -111,6 +117,13 @@ namespace NMap
             {
                 diagram.Rotated = true;
             }
+
+            // Set color
+            chartControl.Legend.BackColor = System.Drawing.ColorTranslator.FromHtml(_config.BackgroundColor);
+            chartControl.Legend.Border.Color = System.Drawing.ColorTranslator.FromHtml(_config.GridColor);
+            chartControl.BackColor = System.Drawing.ColorTranslator.FromHtml(_config.BackgroundColor);
+            diagram.DefaultPane.BackColor = System.Drawing.ColorTranslator.FromHtml(_config.BackgroundColor);
+            diagram.DefaultPane.BorderColor = System.Drawing.ColorTranslator.FromHtml(_config.GridColor);
 
             chartControl.Series.Clear();
             _flawData.Clear();
@@ -499,6 +512,10 @@ namespace NMap
                 diagram.AxisX.Range.MaxValue = Convert.ToDecimal(JobHelper.Lanes.LastOrDefault().StopCD) / _currentFlawMapCD.Conversion * newFlawMapCD.Conversion;
                 diagram.AxisX.Range.Auto = true;
                 diagram.AxisX.Range.ScrollingRange.Auto = true;
+
+                // Set Axis end text
+                diagram.AxisX.Label.EndText = " " + _currentFlawMapCD.Symbol;
+                diagram.AxisY.Label.EndText = " " + _currentFlawMapMD.Symbol;
             }
         }
 

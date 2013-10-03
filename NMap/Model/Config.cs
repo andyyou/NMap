@@ -11,6 +11,8 @@ namespace NMap.Model
         public string BottomAxes { get; set; }
         public bool MDInverse { get; set; }
         public bool CDInverse { get; set; }
+        public string BackgroundColor { get; set; }
+        public string GridColor { get; set; }
         public List<Legend> Legends { get; set; }
     }
 }

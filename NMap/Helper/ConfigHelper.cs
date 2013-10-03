@@ -24,10 +24,12 @@ namespace NMap.Helper
             XElement root = new XElement("Config");
 
             XElement element = new XElement("Map");
-            element.SetAttributeValue("ShowGrid", config.ShowMapGrid == null ? "On" : config.ShowMapGrid);
-            element.SetAttributeValue("BottomAxes", config.BottomAxes == null ? "CD" : config.BottomAxes);
+            element.SetAttributeValue("ShowGrid", config.ShowMapGrid ?? "On");
+            element.SetAttributeValue("BottomAxes", config.BottomAxes ?? "CD");
             element.SetAttributeValue("MDInverse", config.MDInverse);
             element.SetAttributeValue("CDInverse", config.CDInverse);
+            element.SetAttributeValue("BackgroundColor", config.BackgroundColor ?? "#FFFFFF");
+            element.SetAttributeValue("GridColor", config.GridColor ?? "#000000");
             root.Add(element);
 
             foreach (var item in config.Legends)
@@ -52,7 +54,11 @@ namespace NMap.Helper
             // Check config exist
             if (!Directory.Exists(_xmlDirectory) || !File.Exists(_xmlPath))
             {
-                return new Config() { Legends = new List<Legend>() };
+                return new Config() {
+                    BackgroundColor = "#FFFFFF",
+                    GridColor = "#000000",
+                    Legends = new List<Legend>()
+                };
             }
 
             Config config = new Config() { Legends = new List<Legend>() };
@@ -65,6 +71,8 @@ namespace NMap.Helper
             config.BottomAxes = xmlMap.Attribute("BottomAxes").Value;
             config.MDInverse = Convert.ToBoolean(xmlMap.Attribute("MDInverse").Value);
             config.CDInverse = Convert.ToBoolean(xmlMap.Attribute("CDInverse").Value);
+            config.BackgroundColor = xmlMap.Attribute("BackgroundColor").Value;
+            config.GridColor = xmlMap.Attribute("GridColor").Value;
 
             // Get legend setting
             foreach (var legend in xdoc.Root.Elements("Legend"))
