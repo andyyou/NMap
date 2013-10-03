@@ -29,7 +29,9 @@ namespace NMap.Helper
             element.SetAttributeValue("MDInverse", config.MDInverse);
             element.SetAttributeValue("CDInverse", config.CDInverse);
             element.SetAttributeValue("BackgroundColor", config.BackgroundColor ?? "#FFFFFF");
-            element.SetAttributeValue("GridColor", config.GridColor ?? "#000000");
+            element.SetAttributeValue("GridColor", config.GridColor ?? "#AFAFAF");
+            element.SetAttributeValue("XPrecision", config.XPrecision);
+            element.SetAttributeValue("YPrecision", config.YPrecision);
             root.Add(element);
 
             foreach (var item in config.Legends)
@@ -56,7 +58,9 @@ namespace NMap.Helper
             {
                 return new Config() {
                     BackgroundColor = "#FFFFFF",
-                    GridColor = "#000000",
+                    GridColor = "#AFAFAF",
+                    XPrecision = "0",
+                    YPrecision = "0",
                     Legends = new List<Legend>()
                 };
             }
@@ -71,8 +75,10 @@ namespace NMap.Helper
             config.BottomAxes = xmlMap.Attribute("BottomAxes").Value;
             config.MDInverse = Convert.ToBoolean(xmlMap.Attribute("MDInverse").Value);
             config.CDInverse = Convert.ToBoolean(xmlMap.Attribute("CDInverse").Value);
-            config.BackgroundColor = xmlMap.Attribute("BackgroundColor").Value;
-            config.GridColor = xmlMap.Attribute("GridColor").Value;
+            config.BackgroundColor = xmlMap.Attribute("BackgroundColor") == null ? "#FFFFFF" : xmlMap.Attribute("BackgroundColor").Value;
+            config.GridColor = xmlMap.Attribute("GridColor") == null ? "#AFAFAF" : xmlMap.Attribute("GridColor").Value;
+            config.XPrecision = xmlMap.Attribute("XPrecision") == null ? "0" : xmlMap.Attribute("XPrecision").Value;
+            config.YPrecision = xmlMap.Attribute("YPrecision") == null ? "0" : xmlMap.Attribute("YPrecision").Value;
 
             // Get legend setting
             foreach (var legend in xdoc.Root.Elements("Legend"))

@@ -41,8 +41,7 @@ namespace NMap
 
         private List<Unit> _units;
         private string _xmlUnitsPath;
-        private Unit _currentFlawMapCD;
-        private Unit _currentFlawMapMD;
+        private Dictionary<string, Unit> _currentUnitList = new Dictionary<string, Unit>();
 
         public MapWindow()
         {
@@ -53,7 +52,7 @@ namespace NMap
             _flawData.Columns.Add("FlawID", typeof(string));
             _flawData.Columns.Add("FlawType", typeof(int));
             _flawData.Columns.Add("FlawClass", typeof(string));
-            _flawData.Columns.Add("Area", typeof(string));
+            _flawData.Columns.Add("Area", typeof(decimal));
             _flawData.Columns.Add("CD", typeof(decimal));
             _flawData.Columns.Add("MD", typeof(decimal));
             _flawData.Columns.Add("Width", typeof(decimal));
@@ -79,16 +78,16 @@ namespace NMap
             diagram.EnableAxisXScrolling = true;
             diagram.AxisX.Range.MinValue = 0;
             //diagram.AxisX.Range.MaxValue = ;
-            diagram.AxisX.Range.MaxValue = Convert.ToDecimal(JobHelper.Lanes.LastOrDefault().StopCD) * _currentFlawMapCD.Conversion;
+            diagram.AxisX.Range.MaxValue = Convert.ToDecimal(JobHelper.Lanes.LastOrDefault().StopCD) * _currentUnitList["FlawMapCD"].Conversion;
             //diagram.AxisX.Range.ScrollingRange.SetMinMaxValues(0, );
             diagram.AxisX.NumericOptions.Format = NumericFormat.Number;
-            diagram.AxisX.NumericOptions.Precision = 2;
+            diagram.AxisX.NumericOptions.Precision = Convert.ToInt32(_config.XPrecision);
             diagram.AxisX.Reverse = _config.CDInverse;
             diagram.AxisX.GridLines.Visible = _config.ShowMapGrid == "On" ? true : false;
             diagram.AxisX.GridLines.LineStyle.DashStyle = DashStyle.Dash;
             diagram.AxisX.Color = System.Drawing.ColorTranslator.FromHtml(_config.GridColor);
             diagram.AxisX.GridLines.Color = System.Drawing.ColorTranslator.FromHtml(_config.GridColor);
-            diagram.AxisX.Label.EndText = " " + _currentFlawMapCD.Symbol;
+            diagram.AxisX.Label.EndText = " " + _currentUnitList["FlawMapCD"].Symbol;
             //diagram.AxisX.GridSpacingAuto = false;
             diagram.AxisX.Range.Auto = true;
             diagram.AxisX.Range.ScrollingRange.Auto = true;
@@ -100,14 +99,15 @@ namespace NMap
             //diagram.AxisY.Range.MaxValue = ;
             //diagram.AxisY.Range.ScrollingRange.SetMinMaxValues(0, );
             diagram.AxisY.NumericOptions.Format = NumericFormat.Number;
-            diagram.AxisY.NumericOptions.Precision = 2;
+            diagram.AxisY.NumericOptions.Precision = Convert.ToInt32(_config.YPrecision);
             diagram.AxisY.Reverse = _config.MDInverse;
             diagram.AxisY.GridLines.Visible = _config.ShowMapGrid == "On" ? true : false;
             diagram.AxisY.GridLines.LineStyle.DashStyle = DashStyle.Dash;
             diagram.AxisY.Color = System.Drawing.ColorTranslator.FromHtml(_config.GridColor);
             diagram.AxisY.GridLines.Color = System.Drawing.ColorTranslator.FromHtml(_config.GridColor);
-            diagram.AxisY.Label.EndText = " " + _currentFlawMapMD.Symbol;
+            diagram.AxisY.Label.EndText = " " + _currentUnitList["FlawMapMD"].Symbol;
             //diagram.AxisY.GridSpacingAuto = false;
+            
 
             if (_config.BottomAxes == "CD")
             {
@@ -170,12 +170,12 @@ namespace NMap
             double scrollingRangeMin;
             XYDiagram diagram = (XYDiagram)chartControl.Diagram;
             diagram.AxisY.Range.Auto = false;
-            if (_currentFlawMapMD.Symbol.Equals("m"))
+            if (_currentUnitList["FlawMapMD"].Symbol.Equals("m"))
             {
                 scrollingRangeMax = Convert.ToDouble(_flawData.Rows[_flawData.Rows.Count - 1]["MD"]) + 0.1;
                 scrollingRangeMin = scrollingRangeMax - 0.2 < 0 ? 0 : (scrollingRangeMax - 0.2);
             }
-            else if (_currentFlawMapMD.Symbol.Equals("mm"))
+            else if (_currentUnitList["FlawMapMD"].Symbol.Equals("mm"))
             {
                 scrollingRangeMax = Convert.ToDouble(_flawData.Rows[_flawData.Rows.Count - 1]["MD"]) + 100;
                 scrollingRangeMin = scrollingRangeMax - 200 < 0 ? 0 : (scrollingRangeMax - 200);
@@ -222,8 +222,17 @@ namespace NMap
         {
             _xmlUnitsPath = unitsXMLPath;
             LoadXmlToUnitsObject(unitsXMLPath); // Save units value to "_units"
-            _currentFlawMapCD = _units.Find(x => x.ComponentName == "Flaw Map CD");
-            _currentFlawMapMD = _units.Find(x => x.ComponentName == "Flaw Map MD");
+
+            if (_currentUnitList.Count == 0)
+            {
+                _currentUnitList.Add("FlawMapCD", _units.Find(x => x.ComponentName == "Flaw Map CD"));
+                _currentUnitList.Add("FlawMapMD", _units.Find(x => x.ComponentName == "Flaw Map MD"));
+                _currentUnitList.Add("FlawListCD", _units.Find(x => x.ComponentName == "Flaw List CD"));
+                _currentUnitList.Add("FlawListMD", _units.Find(x => x.ComponentName == "Flaw List MD"));
+                _currentUnitList.Add("FlawListArea", _units.Find(x => x.ComponentName == "Flaw List Area"));
+                _currentUnitList.Add("FlawListWidth", _units.Find(x => x.ComponentName == "Flaw List Width"));
+                _currentUnitList.Add("FlawListHeight", _units.Find(x => x.ComponentName == "Flaw List Height"));
+            }
         }
 
         public void SetPosition(int w, int h)
@@ -273,8 +282,8 @@ namespace NMap
                 row["FlawType"] = flaw.FlawType;
                 row["FlawClass"] = flaw.FlawClass;
                 row["Area"] = flaw.Area;
-                row["CD"] = Convert.ToDecimal(flaw.CD) * _currentFlawMapCD.Conversion;
-                row["MD"] = Convert.ToDecimal(flaw.MD) * _currentFlawMapMD.Conversion;
+                row["CD"] = Convert.ToDecimal(flaw.CD) * _currentUnitList["FlawMapCD"].Conversion;
+                row["MD"] = Convert.ToDecimal(flaw.MD) * _currentUnitList["FlawMapMD"].Conversion;
                 row["Width"] = Convert.ToDecimal(flaw.Width);
                 row["Length"] = Convert.ToDecimal(flaw.Length);
                 _flawData.Rows.Add(row);
@@ -474,12 +483,17 @@ namespace NMap
                 // 重新計算 map 上各點座標資料
                 foreach (DataRow row in _flawData.Rows)
                 {
-                    row["CD"] = Convert.ToDecimal(row["CD"]) / _currentFlawMapCD.Conversion * newFlawMapCD.Conversion;
-                    row["MD"] = Convert.ToDecimal(row["MD"]) / _currentFlawMapMD.Conversion * newFlawMapMD.Conversion;
+                    row["CD"] = Convert.ToDecimal(row["CD"]) / _currentUnitList["FlawMapCD"].Conversion * newFlawMapCD.Conversion;
+                    row["MD"] = Convert.ToDecimal(row["MD"]) / _currentUnitList["FlawMapMD"].Conversion * newFlawMapMD.Conversion;
                 }
 
-                _currentFlawMapCD = newFlawMapCD;
-                _currentFlawMapMD = newFlawMapMD;
+                _currentUnitList["FlawMapCD"] = newFlawMapCD;
+                _currentUnitList["FlawMapMD"] = newFlawMapMD;
+                _currentUnitList["FlawListCD"] = _units.Find(x => x.ComponentName == "Flaw List CD");
+                _currentUnitList["FlawListMD"] = _units.Find(x => x.ComponentName == "Flaw List MD");
+                _currentUnitList["FlawListArea"] = _units.Find(x => x.ComponentName == "Flaw List Area");
+                _currentUnitList["FlawListWidth"] = _units.Find(x => x.ComponentName == "Flaw List Width");
+                _currentUnitList["FlawListHeight"] = _units.Find(x => x.ComponentName == "Flaw List Height");
 
                 chartControl.Series.Clear();
                 // Add each legend to chart
@@ -509,13 +523,13 @@ namespace NMap
 
                 XYDiagram diagram = (XYDiagram)chartControl.Diagram;
                 diagram.AxisX.Range.MinValue = 0;
-                diagram.AxisX.Range.MaxValue = Convert.ToDecimal(JobHelper.Lanes.LastOrDefault().StopCD) / _currentFlawMapCD.Conversion * newFlawMapCD.Conversion;
+                diagram.AxisX.Range.MaxValue = Convert.ToDecimal(JobHelper.Lanes.LastOrDefault().StopCD) / _currentUnitList["FlawMapCD"].Conversion * newFlawMapCD.Conversion;
                 diagram.AxisX.Range.Auto = true;
                 diagram.AxisX.Range.ScrollingRange.Auto = true;
 
                 // Set Axis end text
-                diagram.AxisX.Label.EndText = " " + _currentFlawMapCD.Symbol;
-                diagram.AxisY.Label.EndText = " " + _currentFlawMapMD.Symbol;
+                diagram.AxisX.Label.EndText = " " + _currentUnitList["FlawMapCD"].Symbol;
+                diagram.AxisY.Label.EndText = " " + _currentUnitList["FlawMapMD"].Symbol;
             }
         }
 
@@ -571,7 +585,7 @@ namespace NMap
                     string condifion = string.Format("CD = {0} AND MD = {1}", cd, md);
                     DataRow flaw = _flawData.Select(condifion).FirstOrDefault();
 
-                    FlawForm flawForm = new FlawForm(flaw, _currentFlawMapCD.Conversion, _currentFlawMapMD.Conversion);
+                    FlawForm flawForm = new FlawForm(flaw, _currentUnitList);
                     flawForm.ShowDialog();
                 }
                 else

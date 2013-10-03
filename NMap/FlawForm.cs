@@ -18,6 +18,7 @@ namespace NMap
 
         private DataTable _flawData;
         private DataRow _drFlaw;
+        private Dictionary<string, NMap.Model.Unit> _currentUnitList = new Dictionary<string, NMap.Model.Unit>();
         private decimal _currentCdConversion;
         private decimal _currentMdConversion;
         private PictureBox[] _pb;
@@ -29,7 +30,7 @@ namespace NMap
 
         #region Constructor
 
-        public FlawForm(DataRow flaw, decimal currentCdConversion, decimal currentMdConversion)
+        public FlawForm(DataRow flaw, Dictionary<string, NMap.Model.Unit> currentUnitList)
         {
             InitializeComponent();
 
@@ -46,8 +47,9 @@ namespace NMap
 
             _flawData.ImportRow(flaw);
             _drFlaw = _flawData.Rows[0];
-            _currentCdConversion = currentCdConversion;
-            _currentMdConversion = currentMdConversion;
+            _currentCdConversion = currentUnitList["FlawMapCD"].Conversion;
+            _currentMdConversion = currentUnitList["FlawMapMD"].Conversion;
+            _currentUnitList = currentUnitList;
             _drFlaw["CD"] = Convert.ToDecimal(_drFlaw["CD"]) / _currentCdConversion;
             _drFlaw["MD"] = Convert.ToDecimal(_drFlaw["MD"]) / _currentMdConversion;
             DataHelper dh = new DataHelper();
@@ -144,15 +146,19 @@ namespace NMap
             lblFlawIDVal.Text = _drFlaw["FlawID"].ToString();
             lblFlawClassVal.Text = _drFlaw["FlawClass"].ToString();
             lblFlawTypeVal.Text = _drFlaw["FlawType"].ToString();
-            //double cd = Convert.ToDouble(_drFlaw["CD"]) * ucd.Conversion;
-            decimal cd = Convert.ToDecimal(_drFlaw["CD"]) * _currentCdConversion;
-            lblCDVal.Text = cd.ToString("#0.000000");
-            //double md = Convert.ToDouble(_drFlaw["MD"]) * umd.Conversion;
-            decimal md = Convert.ToDecimal(_drFlaw["MD"]) * _currentMdConversion;
-            lblMDVal.Text = md.ToString("#0.000000");
-            lblLengthVal.Text = _drFlaw["Length"].ToString();
-            lblWidthVal.Text = _drFlaw["Width"].ToString();
-            lblAreaVal.Text = _drFlaw["Area"].ToString();
+
+            decimal cd = Convert.ToDecimal(_drFlaw["CD"]) * _currentUnitList["FlawListCD"].Conversion;
+            decimal md = Convert.ToDecimal(_drFlaw["MD"]) * _currentUnitList["FlawListMD"].Conversion;
+            decimal length = Convert.ToDecimal(_drFlaw["Length"]) * _currentUnitList["FlawListHeight"].Conversion;
+            decimal width = Convert.ToDecimal(_drFlaw["Width"]) * _currentUnitList["FlawListWidth"].Conversion;
+            decimal area = Convert.ToDecimal(_drFlaw["Area"]) * _currentUnitList["FlawListArea"].Conversion;
+
+            lblCDVal.Text = string.Format("{0:0.000000} {1}", cd, _currentUnitList["FlawListCD"].Symbol);
+            lblMDVal.Text = string.Format("{0:0.000000} {1}", md, _currentUnitList["FlawListMD"].Symbol);
+            lblLengthVal.Text = string.Format("{0:0.000000} {1}", length, _currentUnitList["FlawListHeight"].Symbol);
+            lblWidthVal.Text = string.Format("{0:0.000000} {1}", width, _currentUnitList["FlawListWidth"].Symbol);
+            lblAreaVal.Text = string.Format("{0:0.000000} {1}", area, _currentUnitList["FlawListArea"].Symbol);
+
             // set about images
             for (int i = 0; i < JobHelper.JobInfo.NumberOfStations; i++)
             {
@@ -210,5 +216,32 @@ namespace NMap
         }
 
         #endregion
+
+        private void tlpFlawInfo_CellPaint(object sender, TableLayoutCellPaintEventArgs e)
+        {
+            var panel = sender as TableLayoutPanel;
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+            var rectangle = e.CellBounds;
+            using (var pen = new Pen(Color.Black, 1))
+            {
+                pen.Alignment = System.Drawing.Drawing2D.PenAlignment.Center;
+                pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
+
+                if (e.Row == (panel.RowCount - 1))
+                {
+                    rectangle.Height -= 1;
+                }
+
+                if (e.Column == (panel.ColumnCount - 1))
+                {
+                    rectangle.Width -= 1;
+                }
+
+                e.Graphics.DrawRectangle(pen, rectangle);
+            }
+        }
+
+
+
     }
 }

@@ -13,6 +13,8 @@ namespace NMap.Model
         public bool CDInverse { get; set; }
         public string BackgroundColor { get; set; }
         public string GridColor { get; set; }
+        public string XPrecision { get; set; }
+        public string YPrecision { get; set; }
         public List<Legend> Legends { get; set; }
     }
 }

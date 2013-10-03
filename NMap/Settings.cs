@@ -44,6 +44,8 @@ namespace NMap
             chkCDInverse.Checked = config.CDInverse;
             lblBackgroundColor.BackColor = System.Drawing.ColorTranslator.FromHtml(config.BackgroundColor);
             lblGridColor.BackColor = System.Drawing.ColorTranslator.FromHtml(config.GridColor);
+            txtXPrecision.Text = config.XPrecision;
+            txtYPrecision.Text = config.YPrecision;
 
             // Initialize DataGridView
             List<Column> columns = new List<Column>();
@@ -113,6 +115,8 @@ namespace NMap
             element.SetAttributeValue("CDInverse", chkCDInverse.Checked);
             element.SetAttributeValue("BackgroundColor", String.Format("#{0:X2}{1:X2}{2:X2}", lblBackgroundColor.BackColor.R, lblBackgroundColor.BackColor.G, lblBackgroundColor.BackColor.B));
             element.SetAttributeValue("GridColor", String.Format("#{0:X2}{1:X2}{2:X2}", lblGridColor.BackColor.R, lblGridColor.BackColor.G, lblGridColor.BackColor.B));
+            element.SetAttributeValue("XPrecision", txtXPrecision.Text);
+            element.SetAttributeValue("YPrecision", txtYPrecision.Text);
             xdoc.Root.Add(element);
 
             // Add defects setting

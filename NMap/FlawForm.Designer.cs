@@ -54,12 +54,11 @@
             // tlpFlawInfo
             // 
             this.tlpFlawInfo.BackColor = System.Drawing.Color.Transparent;
-            this.tlpFlawInfo.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Single;
             this.tlpFlawInfo.ColumnCount = 4;
-            this.tlpFlawInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpFlawInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpFlawInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpFlawInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpFlawInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpFlawInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tlpFlawInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpFlawInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tlpFlawInfo.Controls.Add(this.lblFlawID, 0, 0);
             this.tlpFlawInfo.Controls.Add(this.lblFlawClass, 0, 1);
             this.tlpFlawInfo.Controls.Add(this.lblMD, 0, 2);
@@ -86,164 +85,165 @@
             this.tlpFlawInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpFlawInfo.Size = new System.Drawing.Size(402, 100);
             this.tlpFlawInfo.TabIndex = 3;
+            this.tlpFlawInfo.CellPaint += new System.Windows.Forms.TableLayoutCellPaintEventHandler(this.tlpFlawInfo_CellPaint);
             // 
             // lblFlawID
             // 
             this.lblFlawID.AutoSize = true;
-            this.lblFlawID.Font = new System.Drawing.Font("新細明體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFlawID.Location = new System.Drawing.Point(4, 1);
+            this.lblFlawID.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFlawID.Location = new System.Drawing.Point(3, 0);
             this.lblFlawID.Name = "lblFlawID";
-            this.lblFlawID.Size = new System.Drawing.Size(42, 12);
+            this.lblFlawID.Size = new System.Drawing.Size(56, 14);
             this.lblFlawID.TabIndex = 0;
             this.lblFlawID.Text = "Flaw ID";
             // 
             // lblFlawClass
             // 
             this.lblFlawClass.AutoSize = true;
-            this.lblFlawClass.Font = new System.Drawing.Font("新細明體", 9F);
-            this.lblFlawClass.Location = new System.Drawing.Point(4, 25);
+            this.lblFlawClass.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFlawClass.Location = new System.Drawing.Point(3, 25);
             this.lblFlawClass.Name = "lblFlawClass";
-            this.lblFlawClass.Size = new System.Drawing.Size(54, 12);
+            this.lblFlawClass.Size = new System.Drawing.Size(42, 25);
             this.lblFlawClass.TabIndex = 1;
             this.lblFlawClass.Text = "Flaw Class";
             // 
             // lblMD
             // 
             this.lblMD.AutoSize = true;
-            this.lblMD.Font = new System.Drawing.Font("新細明體", 9F);
-            this.lblMD.Location = new System.Drawing.Point(4, 49);
+            this.lblMD.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMD.Location = new System.Drawing.Point(3, 50);
             this.lblMD.Name = "lblMD";
-            this.lblMD.Size = new System.Drawing.Size(23, 12);
+            this.lblMD.Size = new System.Drawing.Size(21, 14);
             this.lblMD.TabIndex = 2;
             this.lblMD.Text = "MD";
             // 
             // lblWidth
             // 
             this.lblWidth.AutoSize = true;
-            this.lblWidth.Font = new System.Drawing.Font("新細明體", 9F);
-            this.lblWidth.Location = new System.Drawing.Point(4, 73);
+            this.lblWidth.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblWidth.Location = new System.Drawing.Point(3, 75);
             this.lblWidth.Name = "lblWidth";
-            this.lblWidth.Size = new System.Drawing.Size(34, 12);
+            this.lblWidth.Size = new System.Drawing.Size(42, 14);
             this.lblWidth.TabIndex = 3;
             this.lblWidth.Text = "Width";
             // 
             // lblFlawType
             // 
             this.lblFlawType.AutoSize = true;
-            this.lblFlawType.Font = new System.Drawing.Font("新細明體", 9F);
-            this.lblFlawType.Location = new System.Drawing.Point(204, 1);
+            this.lblFlawType.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFlawType.Location = new System.Drawing.Point(203, 0);
             this.lblFlawType.Name = "lblFlawType";
-            this.lblFlawType.Size = new System.Drawing.Size(54, 12);
+            this.lblFlawType.Size = new System.Drawing.Size(70, 14);
             this.lblFlawType.TabIndex = 4;
             this.lblFlawType.Text = "Flaw Type";
             // 
             // lblArea
             // 
             this.lblArea.AutoSize = true;
-            this.lblArea.Font = new System.Drawing.Font("新細明體", 9F);
-            this.lblArea.Location = new System.Drawing.Point(204, 25);
+            this.lblArea.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblArea.Location = new System.Drawing.Point(203, 25);
             this.lblArea.Name = "lblArea";
-            this.lblArea.Size = new System.Drawing.Size(27, 12);
+            this.lblArea.Size = new System.Drawing.Size(35, 14);
             this.lblArea.TabIndex = 5;
             this.lblArea.Text = "Area";
             // 
             // lblCD
             // 
             this.lblCD.AutoSize = true;
-            this.lblCD.Font = new System.Drawing.Font("新細明體", 9F);
-            this.lblCD.Location = new System.Drawing.Point(204, 49);
+            this.lblCD.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCD.Location = new System.Drawing.Point(203, 50);
             this.lblCD.Name = "lblCD";
-            this.lblCD.Size = new System.Drawing.Size(21, 12);
+            this.lblCD.Size = new System.Drawing.Size(21, 14);
             this.lblCD.TabIndex = 6;
             this.lblCD.Text = "CD";
             // 
             // lblLength
             // 
             this.lblLength.AutoSize = true;
-            this.lblLength.Font = new System.Drawing.Font("新細明體", 9F);
-            this.lblLength.Location = new System.Drawing.Point(204, 73);
+            this.lblLength.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLength.Location = new System.Drawing.Point(203, 75);
             this.lblLength.Name = "lblLength";
-            this.lblLength.Size = new System.Drawing.Size(38, 12);
+            this.lblLength.Size = new System.Drawing.Size(49, 14);
             this.lblLength.TabIndex = 7;
             this.lblLength.Text = "Length";
             // 
             // lblFlawIDVal
             // 
             this.lblFlawIDVal.AutoSize = true;
-            this.lblFlawIDVal.Font = new System.Drawing.Font("新細明體", 9F);
-            this.lblFlawIDVal.Location = new System.Drawing.Point(104, 1);
+            this.lblFlawIDVal.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFlawIDVal.Location = new System.Drawing.Point(83, 0);
             this.lblFlawIDVal.Name = "lblFlawIDVal";
-            this.lblFlawIDVal.Size = new System.Drawing.Size(47, 12);
+            this.lblFlawIDVal.Size = new System.Drawing.Size(63, 14);
             this.lblFlawIDVal.TabIndex = 8;
             this.lblFlawIDVal.Text = "ID Value";
             // 
             // lblFlawClassVal
             // 
             this.lblFlawClassVal.AutoSize = true;
-            this.lblFlawClassVal.Font = new System.Drawing.Font("新細明體", 9F);
-            this.lblFlawClassVal.Location = new System.Drawing.Point(104, 25);
+            this.lblFlawClassVal.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFlawClassVal.Location = new System.Drawing.Point(83, 25);
             this.lblFlawClassVal.Name = "lblFlawClassVal";
-            this.lblFlawClassVal.Size = new System.Drawing.Size(59, 12);
+            this.lblFlawClassVal.Size = new System.Drawing.Size(84, 14);
             this.lblFlawClassVal.TabIndex = 8;
             this.lblFlawClassVal.Text = "Class Value";
             // 
             // lblMDVal
             // 
             this.lblMDVal.AutoSize = true;
-            this.lblMDVal.Font = new System.Drawing.Font("新細明體", 9F);
-            this.lblMDVal.Location = new System.Drawing.Point(104, 49);
+            this.lblMDVal.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMDVal.Location = new System.Drawing.Point(83, 50);
             this.lblMDVal.Name = "lblMDVal";
-            this.lblMDVal.Size = new System.Drawing.Size(53, 12);
+            this.lblMDVal.Size = new System.Drawing.Size(63, 14);
             this.lblMDVal.TabIndex = 8;
             this.lblMDVal.Text = "MD Value";
             // 
             // lblWidthVal
             // 
             this.lblWidthVal.AutoSize = true;
-            this.lblWidthVal.Font = new System.Drawing.Font("新細明體", 9F);
-            this.lblWidthVal.Location = new System.Drawing.Point(104, 73);
+            this.lblWidthVal.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblWidthVal.Location = new System.Drawing.Point(83, 75);
             this.lblWidthVal.Name = "lblWidthVal";
-            this.lblWidthVal.Size = new System.Drawing.Size(64, 12);
+            this.lblWidthVal.Size = new System.Drawing.Size(84, 14);
             this.lblWidthVal.TabIndex = 8;
             this.lblWidthVal.Text = "Width Value";
             // 
             // lblFlawTypeVal
             // 
             this.lblFlawTypeVal.AutoSize = true;
-            this.lblFlawTypeVal.Font = new System.Drawing.Font("新細明體", 9F);
-            this.lblFlawTypeVal.Location = new System.Drawing.Point(304, 1);
+            this.lblFlawTypeVal.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFlawTypeVal.Location = new System.Drawing.Point(283, 0);
             this.lblFlawTypeVal.Name = "lblFlawTypeVal";
-            this.lblFlawTypeVal.Size = new System.Drawing.Size(59, 12);
+            this.lblFlawTypeVal.Size = new System.Drawing.Size(77, 14);
             this.lblFlawTypeVal.TabIndex = 8;
             this.lblFlawTypeVal.Text = "Type Value";
             // 
             // lblAreaVal
             // 
             this.lblAreaVal.AutoSize = true;
-            this.lblAreaVal.Font = new System.Drawing.Font("新細明體", 9F);
-            this.lblAreaVal.Location = new System.Drawing.Point(304, 25);
+            this.lblAreaVal.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAreaVal.Location = new System.Drawing.Point(283, 25);
             this.lblAreaVal.Name = "lblAreaVal";
-            this.lblAreaVal.Size = new System.Drawing.Size(57, 12);
+            this.lblAreaVal.Size = new System.Drawing.Size(77, 14);
             this.lblAreaVal.TabIndex = 8;
             this.lblAreaVal.Text = "Area Value";
             // 
             // lblCDVal
             // 
             this.lblCDVal.AutoSize = true;
-            this.lblCDVal.Font = new System.Drawing.Font("新細明體", 9F);
-            this.lblCDVal.Location = new System.Drawing.Point(304, 49);
+            this.lblCDVal.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCDVal.Location = new System.Drawing.Point(283, 50);
             this.lblCDVal.Name = "lblCDVal";
-            this.lblCDVal.Size = new System.Drawing.Size(51, 12);
+            this.lblCDVal.Size = new System.Drawing.Size(63, 14);
             this.lblCDVal.TabIndex = 8;
             this.lblCDVal.Text = "CD Value";
             // 
             // lblLengthVal
             // 
             this.lblLengthVal.AutoSize = true;
-            this.lblLengthVal.Font = new System.Drawing.Font("新細明體", 9F);
-            this.lblLengthVal.Location = new System.Drawing.Point(304, 73);
+            this.lblLengthVal.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblLengthVal.Location = new System.Drawing.Point(283, 75);
             this.lblLengthVal.Name = "lblLengthVal";
-            this.lblLengthVal.Size = new System.Drawing.Size(68, 12);
+            this.lblLengthVal.Size = new System.Drawing.Size(91, 14);
             this.lblLengthVal.TabIndex = 8;
             this.lblLengthVal.Text = "Length Value";
             // 
