@@ -32,6 +32,7 @@
             this.chartControl = new DevExpress.XtraCharts.ChartControl();
             this.btnSetting = new System.Windows.Forms.Button();
             this.btnReset = new System.Windows.Forms.Button();
+            this.lblNotice = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(sideBySideBarSeriesLabel3)).BeginInit();
             this.SuspendLayout();
@@ -73,11 +74,24 @@
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
+            // lblNotice
+            // 
+            this.lblNotice.AutoSize = true;
+            this.lblNotice.BackColor = System.Drawing.Color.Transparent;
+            this.lblNotice.Font = new System.Drawing.Font("新細明體", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lblNotice.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lblNotice.Location = new System.Drawing.Point(13, 21);
+            this.lblNotice.Name = "lblNotice";
+            this.lblNotice.Size = new System.Drawing.Size(252, 12);
+            this.lblNotice.TabIndex = 4;
+            this.lblNotice.Text = "※ 按住 Shift 及滑鼠左鍵並拖曳可局部放大";
+            // 
             // MapWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::NMap.Properties.Resources.BrushedSteel00;
+            this.Controls.Add(this.lblNotice);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnSetting);
             this.Controls.Add(this.chartControl);
@@ -86,6 +100,7 @@
             ((System.ComponentModel.ISupportInitialize)(sideBySideBarSeriesLabel3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -94,6 +109,7 @@
         private DevExpress.XtraCharts.ChartControl chartControl;
         private System.Windows.Forms.Button btnSetting;
         private System.Windows.Forms.Button btnReset;
+        private System.Windows.Forms.Label lblNotice;
 
     }
 }
