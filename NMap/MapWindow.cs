@@ -21,7 +21,7 @@ using System.Text.RegularExpressions;
 namespace NMap
 {
     [Export(typeof(IWRPlugIn))]
-    public partial class MapWindow : UserControl, IWRPlugIn, IWRMapWindow, IOnFlaws, IOnJobLoaded, IOnJobStarted, IOnClassifyFlaw, IOnWebDBConnected, IOnUnitsChanged
+    public partial class MapWindow : UserControl, IWRPlugIn, IWRMapWindow, IOnFlaws, IOnJobLoaded, IOnJobStarted, IOnClassifyFlaw, IOnWebDBConnected, IOnUnitsChanged, IOnOnline, IOnOpenHistory, IOnJobStopped
     {
         private Config _config = new Config() { Legends = new List<NMap.Model.Legend>() };
         private static string _xmlPath = Path.GetDirectoryName(
@@ -37,7 +37,7 @@ namespace NMap
             { "Cross", MarkerKind.Cross },
             { "Star", MarkerKind.Star }
         };
-        private DataTable _flawData;
+        private DataTable _flawData, _tmpFlawData;
 
         private List<Unit> _units;
         private string _xmlUnitsPath;
@@ -57,6 +57,8 @@ namespace NMap
             _flawData.Columns.Add("MD", typeof(decimal));
             _flawData.Columns.Add("Width", typeof(decimal));
             _flawData.Columns.Add("Length", typeof(decimal));
+
+            _tmpFlawData = _flawData.Clone();
         }
 
         #region Refactoring Method
@@ -257,30 +259,17 @@ namespace NMap
 
         public void OnFlaws(IList<IFlawInfo> flaws)
         {
-            //foreach (var flaw in flaws)
-            //{
-            //    Series series = new Series(flaw.FlawID.ToString(), ViewType.Point);
-            //    series.Points.Add(new SeriesPoint(flaw.CD, flaw.MD));
-            //    series.ArgumentScaleType = ScaleType.Numerical;
-            //    series.ValueScaleType = ScaleType.Numerical;
-            //    series.CrosshairEnabled = DevExpress.Utils.DefaultBoolean.False;
-            //    series.Label.PointOptions.PointView = PointView.SeriesName;
-
-            //    NMap.Model.Legend legend = _config.Legends.Where(l => l.Name == flaw.FlawClass).FirstOrDefault();
-            //    string shape = legend.Shape;
-            //    string color = legend.Color;
-            
-            //    PointSeriesView pointView = (PointSeriesView)series.View;
-            //    pointView.PointMarkerOptions.Kind = _dicSeriesShape[shape];
-            //    pointView.Color = System.Drawing.ColorTranslator.FromHtml(color);
-                
-            //    chartControl.Series.Add(series);
-            //}
-
             foreach (var flaw in flaws)
             {
                 DataRow row = null;
-                row = _flawData.NewRow();
+                if (JobHelper.IsOnline || JobHelper.IsOpenHistory)
+                {
+                    row = _flawData.NewRow();
+                }
+                else
+                {
+                    row = _tmpFlawData.NewRow();
+                }
                 row["FlawID"] = flaw.FlawID;
                 row["FlawType"] = flaw.FlawType;
                 row["FlawClass"] = flaw.FlawClass;
@@ -289,7 +278,14 @@ namespace NMap
                 row["MD"] = Convert.ToDecimal(flaw.MD) * _currentUnitList["FlawMapMD"].Conversion;
                 row["Width"] = Convert.ToDecimal(flaw.Width);
                 row["Length"] = Convert.ToDecimal(flaw.Length);
-                _flawData.Rows.Add(row);
+                if (JobHelper.IsOnline || JobHelper.IsOpenHistory)
+                {
+                    _flawData.Rows.Add(row);
+                }
+                else
+                {
+                    _tmpFlawData.Rows.Add(row);
+                }
             }
 
             foreach (Series series in chartControl.Series)
@@ -544,7 +540,35 @@ namespace NMap
 
         public void OnOnline(bool isOnline)
         {
-            throw new NotImplementedException();
+            JobHelper.IsOnline = isOnline;
+
+            // Add temp flaw data to flaw data when back to online
+            if (isOnline && _tmpFlawData.Rows.Count > 0)
+            {
+                foreach (DataRow row in _tmpFlawData.Rows)
+                {
+                    _flawData.ImportRow(row);
+                }
+                _tmpFlawData.Rows.Clear();
+            }
+        }
+
+        #endregion
+
+        #region IOnOpenHistory 成員
+
+        public void OnOpenHistory(double startMD, double stopMD)
+        {
+            JobHelper.IsOpenHistory = true;
+        }
+
+        #endregion
+
+        #region IOnJobStopped 成員
+
+        public void OnJobStopped(double md)
+        {
+            JobHelper.IsOpenHistory = false;
         }
 
         #endregion

@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DevExpress.XtraCharts.SideBySideBarSeriesLabel sideBySideBarSeriesLabel3 = new DevExpress.XtraCharts.SideBySideBarSeriesLabel();
+            DevExpress.XtraCharts.SideBySideBarSeriesLabel sideBySideBarSeriesLabel1 = new DevExpress.XtraCharts.SideBySideBarSeriesLabel();
             this.chartControl = new DevExpress.XtraCharts.ChartControl();
             this.btnSetting = new System.Windows.Forms.Button();
             this.btnReset = new System.Windows.Forms.Button();
             this.lblNotice = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(sideBySideBarSeriesLabel3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(sideBySideBarSeriesLabel1)).BeginInit();
             this.SuspendLayout();
             // 
             // chartControl
@@ -46,8 +46,8 @@
             this.chartControl.Location = new System.Drawing.Point(15, 40);
             this.chartControl.Name = "chartControl";
             this.chartControl.SeriesSerializable = new DevExpress.XtraCharts.Series[0];
-            sideBySideBarSeriesLabel3.LineVisible = true;
-            this.chartControl.SeriesTemplate.Label = sideBySideBarSeriesLabel3;
+            sideBySideBarSeriesLabel1.LineVisible = true;
+            this.chartControl.SeriesTemplate.Label = sideBySideBarSeriesLabel1;
             this.chartControl.Size = new System.Drawing.Size(620, 793);
             this.chartControl.TabIndex = 0;
             this.chartControl.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.chartControl_MouseDoubleClick);
@@ -55,6 +55,7 @@
             // btnSetting
             // 
             this.btnSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSetting.Enabled = false;
             this.btnSetting.Location = new System.Drawing.Point(560, 6);
             this.btnSetting.Name = "btnSetting";
             this.btnSetting.Size = new System.Drawing.Size(75, 29);
@@ -97,7 +98,7 @@
             this.Controls.Add(this.chartControl);
             this.Name = "MapWindow";
             this.Size = new System.Drawing.Size(650, 848);
-            ((System.ComponentModel.ISupportInitialize)(sideBySideBarSeriesLabel3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(sideBySideBarSeriesLabel1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
