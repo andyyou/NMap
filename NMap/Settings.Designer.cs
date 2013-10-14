@@ -30,6 +30,14 @@
         {
             this.btnClose = new System.Windows.Forms.Button();
             this.grbMapSettings = new System.Windows.Forms.GroupBox();
+            this.txtYPrecision = new System.Windows.Forms.TextBox();
+            this.lblYPrecision = new System.Windows.Forms.Label();
+            this.txtXPrecision = new System.Windows.Forms.TextBox();
+            this.lblXPrecision = new System.Windows.Forms.Label();
+            this.lblGridColor = new System.Windows.Forms.Label();
+            this.lblBackgroundColor = new System.Windows.Forms.Label();
+            this.lblGrid = new System.Windows.Forms.Label();
+            this.lblBackground = new System.Windows.Forms.Label();
             this.cmbShowMapGrid = new System.Windows.Forms.ComboBox();
             this.chkCDInverse = new System.Windows.Forms.CheckBox();
             this.chkMDInverse = new System.Windows.Forms.CheckBox();
@@ -39,14 +47,8 @@
             this.gbSeriesSetting = new System.Windows.Forms.GroupBox();
             this.dgvFlawLegends = new System.Windows.Forms.DataGridView();
             this.btnSave = new System.Windows.Forms.Button();
-            this.lblBackground = new System.Windows.Forms.Label();
-            this.lblGrid = new System.Windows.Forms.Label();
-            this.lblBackgroundColor = new System.Windows.Forms.Label();
-            this.lblGridColor = new System.Windows.Forms.Label();
-            this.lblXPrecision = new System.Windows.Forms.Label();
-            this.txtXPrecision = new System.Windows.Forms.TextBox();
-            this.txtYPrecision = new System.Windows.Forms.TextBox();
-            this.lblYPrecision = new System.Windows.Forms.Label();
+            this.lblMapSize = new System.Windows.Forms.Label();
+            this.txtMapSize = new System.Windows.Forms.TextBox();
             this.grbMapSettings.SuspendLayout();
             this.gbSeriesSetting.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFlawLegends)).BeginInit();
@@ -64,6 +66,8 @@
             // 
             // grbMapSettings
             // 
+            this.grbMapSettings.Controls.Add(this.txtMapSize);
+            this.grbMapSettings.Controls.Add(this.lblMapSize);
             this.grbMapSettings.Controls.Add(this.txtYPrecision);
             this.grbMapSettings.Controls.Add(this.lblYPrecision);
             this.grbMapSettings.Controls.Add(this.txtXPrecision);
@@ -80,10 +84,80 @@
             this.grbMapSettings.Controls.Add(this.lblMapGridShow);
             this.grbMapSettings.Location = new System.Drawing.Point(12, 12);
             this.grbMapSettings.Name = "grbMapSettings";
-            this.grbMapSettings.Size = new System.Drawing.Size(440, 100);
+            this.grbMapSettings.Size = new System.Drawing.Size(440, 122);
             this.grbMapSettings.TabIndex = 0;
             this.grbMapSettings.TabStop = false;
             this.grbMapSettings.Text = "Map Setting";
+            // 
+            // txtYPrecision
+            // 
+            this.txtYPrecision.Location = new System.Drawing.Point(355, 68);
+            this.txtYPrecision.MaxLength = 1;
+            this.txtYPrecision.Name = "txtYPrecision";
+            this.txtYPrecision.Size = new System.Drawing.Size(33, 22);
+            this.txtYPrecision.TabIndex = 13;
+            // 
+            // lblYPrecision
+            // 
+            this.lblYPrecision.AutoSize = true;
+            this.lblYPrecision.Location = new System.Drawing.Point(257, 73);
+            this.lblYPrecision.Name = "lblYPrecision";
+            this.lblYPrecision.Size = new System.Drawing.Size(94, 12);
+            this.lblYPrecision.TabIndex = 12;
+            this.lblYPrecision.Text = "Y Axis Precision：";
+            // 
+            // txtXPrecision
+            // 
+            this.txtXPrecision.Location = new System.Drawing.Point(108, 68);
+            this.txtXPrecision.MaxLength = 1;
+            this.txtXPrecision.Name = "txtXPrecision";
+            this.txtXPrecision.Size = new System.Drawing.Size(33, 22);
+            this.txtXPrecision.TabIndex = 11;
+            // 
+            // lblXPrecision
+            // 
+            this.lblXPrecision.AutoSize = true;
+            this.lblXPrecision.Location = new System.Drawing.Point(10, 73);
+            this.lblXPrecision.Name = "lblXPrecision";
+            this.lblXPrecision.Size = new System.Drawing.Size(94, 12);
+            this.lblXPrecision.TabIndex = 10;
+            this.lblXPrecision.Text = "X Axis Precision：";
+            // 
+            // lblGridColor
+            // 
+            this.lblGridColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblGridColor.Location = new System.Drawing.Point(403, 48);
+            this.lblGridColor.Name = "lblGridColor";
+            this.lblGridColor.Size = new System.Drawing.Size(12, 12);
+            this.lblGridColor.TabIndex = 9;
+            this.lblGridColor.Click += new System.EventHandler(this.lblGridColor_Click);
+            // 
+            // lblBackgroundColor
+            // 
+            this.lblBackgroundColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblBackgroundColor.Location = new System.Drawing.Point(334, 48);
+            this.lblBackgroundColor.Name = "lblBackgroundColor";
+            this.lblBackgroundColor.Size = new System.Drawing.Size(12, 12);
+            this.lblBackgroundColor.TabIndex = 7;
+            this.lblBackgroundColor.Click += new System.EventHandler(this.lblBackgroundColor_Click);
+            // 
+            // lblGrid
+            // 
+            this.lblGrid.AutoSize = true;
+            this.lblGrid.Location = new System.Drawing.Point(363, 48);
+            this.lblGrid.Name = "lblGrid";
+            this.lblGrid.Size = new System.Drawing.Size(38, 12);
+            this.lblGrid.TabIndex = 8;
+            this.lblGrid.Text = "Grid：";
+            // 
+            // lblBackground
+            // 
+            this.lblBackground.AutoSize = true;
+            this.lblBackground.Location = new System.Drawing.Point(257, 48);
+            this.lblBackground.Name = "lblBackground";
+            this.lblBackground.Size = new System.Drawing.Size(75, 12);
+            this.lblBackground.TabIndex = 6;
+            this.lblBackground.Text = "Background：";
             // 
             // cmbShowMapGrid
             // 
@@ -100,7 +174,7 @@
             // chkCDInverse
             // 
             this.chkCDInverse.AutoSize = true;
-            this.chkCDInverse.Location = new System.Drawing.Point(108, 48);
+            this.chkCDInverse.Location = new System.Drawing.Point(108, 46);
             this.chkCDInverse.Name = "chkCDInverse";
             this.chkCDInverse.Size = new System.Drawing.Size(77, 16);
             this.chkCDInverse.TabIndex = 5;
@@ -110,7 +184,7 @@
             // chkMDInverse
             // 
             this.chkMDInverse.AutoSize = true;
-            this.chkMDInverse.Location = new System.Drawing.Point(12, 48);
+            this.chkMDInverse.Location = new System.Drawing.Point(12, 46);
             this.chkMDInverse.Name = "chkMDInverse";
             this.chkMDInverse.Size = new System.Drawing.Size(79, 16);
             this.chkMDInverse.TabIndex = 4;
@@ -150,9 +224,9 @@
             // gbSeriesSetting
             // 
             this.gbSeriesSetting.Controls.Add(this.dgvFlawLegends);
-            this.gbSeriesSetting.Location = new System.Drawing.Point(12, 124);
+            this.gbSeriesSetting.Location = new System.Drawing.Point(12, 140);
             this.gbSeriesSetting.Name = "gbSeriesSetting";
-            this.gbSeriesSetting.Size = new System.Drawing.Size(440, 343);
+            this.gbSeriesSetting.Size = new System.Drawing.Size(440, 327);
             this.gbSeriesSetting.TabIndex = 1;
             this.gbSeriesSetting.TabStop = false;
             this.gbSeriesSetting.Text = "Defects Setting";
@@ -183,75 +257,22 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // lblBackground
+            // lblMapSize
             // 
-            this.lblBackground.AutoSize = true;
-            this.lblBackground.Location = new System.Drawing.Point(257, 50);
-            this.lblBackground.Name = "lblBackground";
-            this.lblBackground.Size = new System.Drawing.Size(75, 12);
-            this.lblBackground.TabIndex = 6;
-            this.lblBackground.Text = "Background：";
+            this.lblMapSize.AutoSize = true;
+            this.lblMapSize.Location = new System.Drawing.Point(10, 96);
+            this.lblMapSize.Name = "lblMapSize";
+            this.lblMapSize.Size = new System.Drawing.Size(60, 12);
+            this.lblMapSize.TabIndex = 14;
+            this.lblMapSize.Text = "Map Size：";
             // 
-            // lblGrid
+            // txtMapSize
             // 
-            this.lblGrid.AutoSize = true;
-            this.lblGrid.Location = new System.Drawing.Point(363, 50);
-            this.lblGrid.Name = "lblGrid";
-            this.lblGrid.Size = new System.Drawing.Size(38, 12);
-            this.lblGrid.TabIndex = 8;
-            this.lblGrid.Text = "Grid：";
-            // 
-            // lblBackgroundColor
-            // 
-            this.lblBackgroundColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblBackgroundColor.Location = new System.Drawing.Point(334, 50);
-            this.lblBackgroundColor.Name = "lblBackgroundColor";
-            this.lblBackgroundColor.Size = new System.Drawing.Size(12, 12);
-            this.lblBackgroundColor.TabIndex = 7;
-            this.lblBackgroundColor.Click += new System.EventHandler(this.lblBackgroundColor_Click);
-            // 
-            // lblGridColor
-            // 
-            this.lblGridColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lblGridColor.Location = new System.Drawing.Point(403, 50);
-            this.lblGridColor.Name = "lblGridColor";
-            this.lblGridColor.Size = new System.Drawing.Size(12, 12);
-            this.lblGridColor.TabIndex = 9;
-            this.lblGridColor.Click += new System.EventHandler(this.lblGridColor_Click);
-            // 
-            // lblXPrecision
-            // 
-            this.lblXPrecision.AutoSize = true;
-            this.lblXPrecision.Location = new System.Drawing.Point(10, 73);
-            this.lblXPrecision.Name = "lblXPrecision";
-            this.lblXPrecision.Size = new System.Drawing.Size(94, 12);
-            this.lblXPrecision.TabIndex = 10;
-            this.lblXPrecision.Text = "X Axis Precision：";
-            // 
-            // txtXPrecision
-            // 
-            this.txtXPrecision.Location = new System.Drawing.Point(108, 68);
-            this.txtXPrecision.MaxLength = 1;
-            this.txtXPrecision.Name = "txtXPrecision";
-            this.txtXPrecision.Size = new System.Drawing.Size(33, 22);
-            this.txtXPrecision.TabIndex = 11;
-            // 
-            // txtYPrecision
-            // 
-            this.txtYPrecision.Location = new System.Drawing.Point(355, 68);
-            this.txtYPrecision.MaxLength = 1;
-            this.txtYPrecision.Name = "txtYPrecision";
-            this.txtYPrecision.Size = new System.Drawing.Size(33, 22);
-            this.txtYPrecision.TabIndex = 13;
-            // 
-            // lblYPrecision
-            // 
-            this.lblYPrecision.AutoSize = true;
-            this.lblYPrecision.Location = new System.Drawing.Point(257, 73);
-            this.lblYPrecision.Name = "lblYPrecision";
-            this.lblYPrecision.Size = new System.Drawing.Size(94, 12);
-            this.lblYPrecision.TabIndex = 12;
-            this.lblYPrecision.Text = "Y Axis Precision：";
+            this.txtMapSize.Location = new System.Drawing.Point(73, 91);
+            this.txtMapSize.MaxLength = 4;
+            this.txtMapSize.Name = "txtMapSize";
+            this.txtMapSize.Size = new System.Drawing.Size(33, 22);
+            this.txtMapSize.TabIndex = 15;
             // 
             // Settings
             // 
@@ -295,5 +316,7 @@
         private System.Windows.Forms.TextBox txtXPrecision;
         private System.Windows.Forms.TextBox txtYPrecision;
         private System.Windows.Forms.Label lblYPrecision;
+        private System.Windows.Forms.TextBox txtMapSize;
+        private System.Windows.Forms.Label lblMapSize;
     }
 }

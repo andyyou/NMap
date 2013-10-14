@@ -76,10 +76,10 @@ namespace NMap
             // Setting AxisX format
             diagram.EnableAxisXZooming = true;
             diagram.EnableAxisXScrolling = true;
-            diagram.AxisX.Range.MinValue = 0;
-            //diagram.AxisX.Range.MaxValue = ;
-            diagram.AxisX.Range.MaxValue = Convert.ToDecimal(JobHelper.Lanes.LastOrDefault().StopCD) * _currentUnitList["FlawMapCD"].Conversion;
-            //diagram.AxisX.Range.ScrollingRange.SetMinMaxValues(0, );
+            //diagram.AxisX.Range.MinValue = 0;
+            //diagram.AxisX.Range.MaxValue = Convert.ToDecimal(JobHelper.Lanes.LastOrDefault().StopCD) * _currentUnitList["FlawMapCD"].Conversion;
+            diagram.AxisX.Range.SetMinMaxValues(0, Convert.ToDecimal(JobHelper.Lanes.LastOrDefault().StopCD) * _currentUnitList["FlawMapCD"].Conversion);
+            diagram.AxisX.Range.ScrollingRange.SetMinMaxValues(0, Convert.ToDecimal(JobHelper.Lanes.LastOrDefault().StopCD) * _currentUnitList["FlawMapCD"].Conversion);
             diagram.AxisX.NumericOptions.Format = NumericFormat.Number;
             diagram.AxisX.NumericOptions.Precision = Convert.ToInt32(_config.XPrecision);
             diagram.AxisX.Reverse = _config.CDInverse;
@@ -97,7 +97,11 @@ namespace NMap
             diagram.EnableAxisYScrolling = true;
             diagram.AxisY.Range.MinValue = 0;
             //diagram.AxisY.Range.MaxValue = ;
-            //diagram.AxisY.Range.ScrollingRange.SetMinMaxValues(0, );
+            if (_config.MapSize != "")
+            {
+                diagram.AxisY.Range.SetMinMaxValues(0, Convert.ToInt32(_config.MapSize) * _currentUnitList["FlawMapMD"].Conversion);
+                diagram.AxisY.Range.ScrollingRange.SetMinMaxValues(0, Convert.ToInt32(_config.MapSize) * _currentUnitList["FlawMapMD"].Conversion);
+            }
             diagram.AxisY.NumericOptions.Format = NumericFormat.Number;
             diagram.AxisY.NumericOptions.Precision = Convert.ToInt32(_config.YPrecision);
             diagram.AxisY.Reverse = _config.MDInverse;
@@ -166,6 +170,8 @@ namespace NMap
 
         private void SetScrollingRange()
         {
+            if (_config.MapSize != "") return;
+
             double scrollingRangeMax;
             double scrollingRangeMin;
             XYDiagram diagram = (XYDiagram)chartControl.Diagram;
@@ -270,9 +276,6 @@ namespace NMap
                 
             //    chartControl.Series.Add(series);
             //}
-            //// UNDONE
-            //XYDiagram diagram = (XYDiagram)chartControl.Diagram;
-            //diagram.AxisY.Range.ScrollingRange.MaxValue = diagram.AxisY.Range.MaxValue;
 
             foreach (var flaw in flaws)
             {
@@ -522,15 +525,26 @@ namespace NMap
                 SetScrollingRange();
 
                 XYDiagram diagram = (XYDiagram)chartControl.Diagram;
-                diagram.AxisX.Range.MinValue = 0;
-                diagram.AxisX.Range.MaxValue = Convert.ToDecimal(JobHelper.Lanes.LastOrDefault().StopCD) / _currentUnitList["FlawMapCD"].Conversion * newFlawMapCD.Conversion;
-                diagram.AxisX.Range.Auto = true;
-                diagram.AxisX.Range.ScrollingRange.Auto = true;
+                diagram.AxisX.Range.SetMinMaxValues(0, Convert.ToDecimal(JobHelper.Lanes.LastOrDefault().StopCD) * newFlawMapCD.Conversion);
+                diagram.AxisX.Range.ScrollingRange.SetMinMaxValues(0, Convert.ToDecimal(JobHelper.Lanes.LastOrDefault().StopCD) * newFlawMapCD.Conversion);
+                //diagram.AxisX.Range.Auto = true;
+                //diagram.AxisX.Range.ScrollingRange.Auto = true;
+                diagram.AxisY.Range.SetMinMaxValues(0, Convert.ToInt32(_config.MapSize) * newFlawMapMD.Conversion);
+                diagram.AxisY.Range.ScrollingRange.SetMinMaxValues(0, Convert.ToInt32(_config.MapSize) * newFlawMapMD.Conversion);
 
                 // Set Axis end text
                 diagram.AxisX.Label.EndText = " " + _currentUnitList["FlawMapCD"].Symbol;
                 diagram.AxisY.Label.EndText = " " + _currentUnitList["FlawMapMD"].Symbol;
             }
+        }
+
+        #endregion
+
+        #region IOnOnline 成員
+
+        public void OnOnline(bool isOnline)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -547,8 +561,17 @@ namespace NMap
         private void btnReset_Click(object sender, EventArgs e)
         {
             XYDiagram diagram = (XYDiagram)chartControl.Diagram;
-            diagram.AxisX.Range.Auto = true;
-            diagram.AxisX.Range.ScrollingRange.Auto = true;
+            //diagram.AxisX.Range.Auto = true;
+            //diagram.AxisX.Range.ScrollingRange.Auto = true;
+            diagram.AxisX.Range.SetMinMaxValues(0, Convert.ToDecimal(JobHelper.Lanes.LastOrDefault().StopCD) * _currentUnitList["FlawMapCD"].Conversion);
+            diagram.AxisX.Range.ScrollingRange.SetMinMaxValues(0, Convert.ToDecimal(JobHelper.Lanes.LastOrDefault().StopCD) * _currentUnitList["FlawMapCD"].Conversion);
+
+            if (_config.MapSize != "")
+            {
+                //diagram.AxisY.Range.SetMinMaxValues(0, Convert.ToInt32(_config.MapSize));
+                diagram.AxisY.Range.SetMinMaxValues(0, Convert.ToInt32(_config.MapSize) * _currentUnitList["FlawMapMD"].Conversion);
+                diagram.AxisY.Range.ScrollingRange.SetMinMaxValues(0, Convert.ToInt32(_config.MapSize) * _currentUnitList["FlawMapMD"].Conversion);
+            }
             //
             //diagram.AxisX.Range.Auto = false;
             //diagram.AxisX.Range.ScrollingRange.Auto = false;

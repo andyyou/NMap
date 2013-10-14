@@ -19,7 +19,7 @@ namespace NMap
         private List<NMap.Model.Legend> _legends = new List<NMap.Model.Legend>();
         private static string _xmlPath = Path.GetDirectoryName(
                                          Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName) +
-                                         @"\..\Parameter Files\NMap\legends.xml";
+                                         @"\..\PlugIns\NMap\legends.xml";
         private Dictionary<string, string> shapes = new Dictionary<string, string>(){
             { "Triangle", "▲" },
             { "InvertedTriangle", "▼" },
@@ -46,6 +46,7 @@ namespace NMap
             lblGridColor.BackColor = System.Drawing.ColorTranslator.FromHtml(config.GridColor);
             txtXPrecision.Text = config.XPrecision;
             txtYPrecision.Text = config.YPrecision;
+            txtMapSize.Text = config.MapSize;
 
             // Initialize DataGridView
             List<Column> columns = new List<Column>();
@@ -117,6 +118,7 @@ namespace NMap
             element.SetAttributeValue("GridColor", String.Format("#{0:X2}{1:X2}{2:X2}", lblGridColor.BackColor.R, lblGridColor.BackColor.G, lblGridColor.BackColor.B));
             element.SetAttributeValue("XPrecision", txtXPrecision.Text);
             element.SetAttributeValue("YPrecision", txtYPrecision.Text);
+            element.SetAttributeValue("MapSize", txtMapSize.Text);
             xdoc.Root.Add(element);
 
             // Add defects setting

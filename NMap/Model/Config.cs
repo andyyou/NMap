@@ -15,6 +15,7 @@ namespace NMap.Model
         public string GridColor { get; set; }
         public string XPrecision { get; set; }
         public string YPrecision { get; set; }
+        public string MapSize { get; set; }
         public List<Legend> Legends { get; set; }
     }
 }
