@@ -28,8 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnClose = new System.Windows.Forms.Button();
             this.grbMapSettings = new System.Windows.Forms.GroupBox();
+            this.txtScrollingRange = new System.Windows.Forms.TextBox();
+            this.lblScrollingRange = new System.Windows.Forms.Label();
+            this.txtYPrecision = new System.Windows.Forms.TextBox();
+            this.lblYPrecision = new System.Windows.Forms.Label();
+            this.txtXPrecision = new System.Windows.Forms.TextBox();
+            this.lblXPrecision = new System.Windows.Forms.Label();
+            this.lblGridColor = new System.Windows.Forms.Label();
+            this.lblBackgroundColor = new System.Windows.Forms.Label();
+            this.lblGrid = new System.Windows.Forms.Label();
+            this.lblBackground = new System.Windows.Forms.Label();
             this.cmbShowMapGrid = new System.Windows.Forms.ComboBox();
             this.chkCDInverse = new System.Windows.Forms.CheckBox();
             this.chkMDInverse = new System.Windows.Forms.CheckBox();
@@ -44,18 +54,28 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvFlawLegends)).BeginInit();
             this.SuspendLayout();
             // 
-            // btnCancel
+            // btnClose
             // 
-            this.btnCancel.Location = new System.Drawing.Point(377, 447);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 2;
-            this.btnCancel.Text = "Close";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            this.btnClose.Location = new System.Drawing.Point(377, 473);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(75, 23);
+            this.btnClose.TabIndex = 3;
+            this.btnClose.Text = "Close";
+            this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // grbMapSettings
             // 
+            this.grbMapSettings.Controls.Add(this.txtScrollingRange);
+            this.grbMapSettings.Controls.Add(this.lblScrollingRange);
+            this.grbMapSettings.Controls.Add(this.txtYPrecision);
+            this.grbMapSettings.Controls.Add(this.lblYPrecision);
+            this.grbMapSettings.Controls.Add(this.txtXPrecision);
+            this.grbMapSettings.Controls.Add(this.lblXPrecision);
+            this.grbMapSettings.Controls.Add(this.lblGridColor);
+            this.grbMapSettings.Controls.Add(this.lblBackgroundColor);
+            this.grbMapSettings.Controls.Add(this.lblGrid);
+            this.grbMapSettings.Controls.Add(this.lblBackground);
             this.grbMapSettings.Controls.Add(this.cmbShowMapGrid);
             this.grbMapSettings.Controls.Add(this.chkCDInverse);
             this.grbMapSettings.Controls.Add(this.chkMDInverse);
@@ -64,10 +84,97 @@
             this.grbMapSettings.Controls.Add(this.lblMapGridShow);
             this.grbMapSettings.Location = new System.Drawing.Point(12, 12);
             this.grbMapSettings.Name = "grbMapSettings";
-            this.grbMapSettings.Size = new System.Drawing.Size(440, 73);
+            this.grbMapSettings.Size = new System.Drawing.Size(440, 122);
             this.grbMapSettings.TabIndex = 0;
             this.grbMapSettings.TabStop = false;
             this.grbMapSettings.Text = "Map Setting";
+            // 
+            // txtScrollingRange
+            // 
+            this.txtScrollingRange.Location = new System.Drawing.Point(108, 91);
+            this.txtScrollingRange.MaxLength = 4;
+            this.txtScrollingRange.Name = "txtScrollingRange";
+            this.txtScrollingRange.Size = new System.Drawing.Size(33, 22);
+            this.txtScrollingRange.TabIndex = 15;
+            // 
+            // lblScrollingRange
+            // 
+            this.lblScrollingRange.AutoSize = true;
+            this.lblScrollingRange.Location = new System.Drawing.Point(10, 96);
+            this.lblScrollingRange.Name = "lblScrollingRange";
+            this.lblScrollingRange.Size = new System.Drawing.Size(92, 12);
+            this.lblScrollingRange.TabIndex = 14;
+            this.lblScrollingRange.Text = "Scrolling Range：";
+            // 
+            // txtYPrecision
+            // 
+            this.txtYPrecision.Location = new System.Drawing.Point(355, 68);
+            this.txtYPrecision.MaxLength = 1;
+            this.txtYPrecision.Name = "txtYPrecision";
+            this.txtYPrecision.Size = new System.Drawing.Size(33, 22);
+            this.txtYPrecision.TabIndex = 13;
+            // 
+            // lblYPrecision
+            // 
+            this.lblYPrecision.AutoSize = true;
+            this.lblYPrecision.Location = new System.Drawing.Point(257, 73);
+            this.lblYPrecision.Name = "lblYPrecision";
+            this.lblYPrecision.Size = new System.Drawing.Size(94, 12);
+            this.lblYPrecision.TabIndex = 12;
+            this.lblYPrecision.Text = "Y Axis Precision：";
+            // 
+            // txtXPrecision
+            // 
+            this.txtXPrecision.Location = new System.Drawing.Point(108, 68);
+            this.txtXPrecision.MaxLength = 1;
+            this.txtXPrecision.Name = "txtXPrecision";
+            this.txtXPrecision.Size = new System.Drawing.Size(33, 22);
+            this.txtXPrecision.TabIndex = 11;
+            // 
+            // lblXPrecision
+            // 
+            this.lblXPrecision.AutoSize = true;
+            this.lblXPrecision.Location = new System.Drawing.Point(10, 73);
+            this.lblXPrecision.Name = "lblXPrecision";
+            this.lblXPrecision.Size = new System.Drawing.Size(94, 12);
+            this.lblXPrecision.TabIndex = 10;
+            this.lblXPrecision.Text = "X Axis Precision：";
+            // 
+            // lblGridColor
+            // 
+            this.lblGridColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblGridColor.Location = new System.Drawing.Point(403, 48);
+            this.lblGridColor.Name = "lblGridColor";
+            this.lblGridColor.Size = new System.Drawing.Size(12, 12);
+            this.lblGridColor.TabIndex = 9;
+            this.lblGridColor.Click += new System.EventHandler(this.lblGridColor_Click);
+            // 
+            // lblBackgroundColor
+            // 
+            this.lblBackgroundColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lblBackgroundColor.Location = new System.Drawing.Point(334, 48);
+            this.lblBackgroundColor.Name = "lblBackgroundColor";
+            this.lblBackgroundColor.Size = new System.Drawing.Size(12, 12);
+            this.lblBackgroundColor.TabIndex = 7;
+            this.lblBackgroundColor.Click += new System.EventHandler(this.lblBackgroundColor_Click);
+            // 
+            // lblGrid
+            // 
+            this.lblGrid.AutoSize = true;
+            this.lblGrid.Location = new System.Drawing.Point(363, 48);
+            this.lblGrid.Name = "lblGrid";
+            this.lblGrid.Size = new System.Drawing.Size(38, 12);
+            this.lblGrid.TabIndex = 8;
+            this.lblGrid.Text = "Grid：";
+            // 
+            // lblBackground
+            // 
+            this.lblBackground.AutoSize = true;
+            this.lblBackground.Location = new System.Drawing.Point(257, 48);
+            this.lblBackground.Name = "lblBackground";
+            this.lblBackground.Size = new System.Drawing.Size(75, 12);
+            this.lblBackground.TabIndex = 6;
+            this.lblBackground.Text = "Background：";
             // 
             // cmbShowMapGrid
             // 
@@ -79,25 +186,25 @@
             this.cmbShowMapGrid.Location = new System.Drawing.Point(108, 19);
             this.cmbShowMapGrid.Name = "cmbShowMapGrid";
             this.cmbShowMapGrid.Size = new System.Drawing.Size(82, 20);
-            this.cmbShowMapGrid.TabIndex = 7;
+            this.cmbShowMapGrid.TabIndex = 1;
             // 
             // chkCDInverse
             // 
             this.chkCDInverse.AutoSize = true;
-            this.chkCDInverse.Location = new System.Drawing.Point(108, 48);
+            this.chkCDInverse.Location = new System.Drawing.Point(108, 46);
             this.chkCDInverse.Name = "chkCDInverse";
             this.chkCDInverse.Size = new System.Drawing.Size(77, 16);
-            this.chkCDInverse.TabIndex = 6;
+            this.chkCDInverse.TabIndex = 5;
             this.chkCDInverse.Text = "CD Inverse";
             this.chkCDInverse.UseVisualStyleBackColor = true;
             // 
             // chkMDInverse
             // 
             this.chkMDInverse.AutoSize = true;
-            this.chkMDInverse.Location = new System.Drawing.Point(12, 48);
+            this.chkMDInverse.Location = new System.Drawing.Point(12, 46);
             this.chkMDInverse.Name = "chkMDInverse";
             this.chkMDInverse.Size = new System.Drawing.Size(79, 16);
-            this.chkMDInverse.TabIndex = 5;
+            this.chkMDInverse.TabIndex = 4;
             this.chkMDInverse.Text = "MD Inverse";
             this.chkMDInverse.UseVisualStyleBackColor = true;
             // 
@@ -111,7 +218,7 @@
             this.cmbBottomAxes.Location = new System.Drawing.Point(342, 19);
             this.cmbBottomAxes.Name = "cmbBottomAxes";
             this.cmbBottomAxes.Size = new System.Drawing.Size(82, 20);
-            this.cmbBottomAxes.TabIndex = 4;
+            this.cmbBottomAxes.TabIndex = 3;
             // 
             // lblBottomAxie
             // 
@@ -119,7 +226,7 @@
             this.lblBottomAxie.Location = new System.Drawing.Point(257, 23);
             this.lblBottomAxie.Name = "lblBottomAxie";
             this.lblBottomAxie.Size = new System.Drawing.Size(78, 12);
-            this.lblBottomAxie.TabIndex = 3;
+            this.lblBottomAxie.TabIndex = 2;
             this.lblBottomAxie.Text = "Bottom Axes：";
             // 
             // lblMapGridShow
@@ -134,9 +241,9 @@
             // gbSeriesSetting
             // 
             this.gbSeriesSetting.Controls.Add(this.dgvFlawLegends);
-            this.gbSeriesSetting.Location = new System.Drawing.Point(12, 98);
+            this.gbSeriesSetting.Location = new System.Drawing.Point(12, 140);
             this.gbSeriesSetting.Name = "gbSeriesSetting";
-            this.gbSeriesSetting.Size = new System.Drawing.Size(440, 343);
+            this.gbSeriesSetting.Size = new System.Drawing.Size(440, 327);
             this.gbSeriesSetting.TabIndex = 1;
             this.gbSeriesSetting.TabStop = false;
             this.gbSeriesSetting.Text = "Defects Setting";
@@ -159,10 +266,10 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(296, 447);
+            this.btnSave.Location = new System.Drawing.Point(296, 473);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 3;
+            this.btnSave.TabIndex = 2;
             this.btnSave.Text = "Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -171,12 +278,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(465, 482);
+            this.ClientSize = new System.Drawing.Size(465, 506);
             this.ControlBox = false;
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.gbSeriesSetting);
             this.Controls.Add(this.grbMapSettings);
-            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnClose);
             this.Name = "Settings";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Settings";
@@ -190,7 +297,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.GroupBox grbMapSettings;
         private System.Windows.Forms.CheckBox chkCDInverse;
         private System.Windows.Forms.CheckBox chkMDInverse;
@@ -201,5 +308,15 @@
         private System.Windows.Forms.DataGridView dgvFlawLegends;
         private System.Windows.Forms.ComboBox cmbShowMapGrid;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Label lblGridColor;
+        private System.Windows.Forms.Label lblBackgroundColor;
+        private System.Windows.Forms.Label lblGrid;
+        private System.Windows.Forms.Label lblBackground;
+        private System.Windows.Forms.Label lblXPrecision;
+        private System.Windows.Forms.TextBox txtXPrecision;
+        private System.Windows.Forms.TextBox txtYPrecision;
+        private System.Windows.Forms.Label lblYPrecision;
+        private System.Windows.Forms.TextBox txtScrollingRange;
+        private System.Windows.Forms.Label lblScrollingRange;
     }
 }
