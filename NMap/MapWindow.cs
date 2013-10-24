@@ -300,7 +300,10 @@ namespace NMap
                 series.DataSource = QueryDataTable(_flawData, "FlawClass = '" + series.Name + "'", ""); ;
             }
 
-            SetScrollingRange();
+            if (JobHelper.IsOnline || JobHelper.IsOpenHistory)
+            {
+                SetScrollingRange();
+            }
             //diagram.AxisY.Range.ScrollingRange.MaxValue = diagram.AxisY.Range.MaxValue;
 
             // Add each legend to chart
@@ -337,8 +340,9 @@ namespace NMap
             JobHelper.Lanes = lanes;
             JobHelper.SeverityInfo = severityInfo;
 
-            btnSetting.Enabled = true;
+            //btnSetting.Enabled = true;
             chartControl.Series.Clear();
+            _flawData.Clear();
             //InitialChart();
         }
 
@@ -430,7 +434,7 @@ namespace NMap
 
         public void OnJobStarted(int jobKey)
         {
-            btnSetting.Enabled = false;
+            //btnSetting.Enabled = false;
             JobHelper.JobKey = jobKey;
 
             // Get config from xml file
@@ -501,24 +505,24 @@ namespace NMap
                 _currentUnitList["FlawListWidth"] = _units.Find(x => x.ComponentName == "Flaw List Width");
                 _currentUnitList["FlawListHeight"] = _units.Find(x => x.ComponentName == "Flaw List Height");
 
-                chartControl.Series.Clear();
-                // Add each legend to chart
-                foreach (var legend in _config.Legends)
-                {
-                    Series series = new Series(legend.Name, ViewType.Point);
-                    series.ArgumentScaleType = ScaleType.Numerical;
-                    series.ArgumentDataMember = "CD";
-                    series.ValueScaleType = ScaleType.Numerical;
-                    series.ValueDataMembers.AddRange(new string[] { "MD" });
-                    series.CrosshairEnabled = DevExpress.Utils.DefaultBoolean.False;
+                //chartControl.Series.Clear();
+                //// Add each legend to chart
+                //foreach (var legend in _config.Legends)
+                //{
+                //    Series series = new Series(legend.Name, ViewType.Point);
+                //    series.ArgumentScaleType = ScaleType.Numerical;
+                //    series.ArgumentDataMember = "CD";
+                //    series.ValueScaleType = ScaleType.Numerical;
+                //    series.ValueDataMembers.AddRange(new string[] { "MD" });
+                //    series.CrosshairEnabled = DevExpress.Utils.DefaultBoolean.False;
 
-                    PointSeriesView seriesView = (PointSeriesView)series.View;
-                    seriesView.PointMarkerOptions.Size = 15;
-                    seriesView.PointMarkerOptions.Kind = _dicSeriesShape[legend.Shape];
-                    seriesView.Color = System.Drawing.ColorTranslator.FromHtml(legend.Color);
+                //    PointSeriesView seriesView = (PointSeriesView)series.View;
+                //    seriesView.PointMarkerOptions.Size = 15;
+                //    seriesView.PointMarkerOptions.Kind = _dicSeriesShape[legend.Shape];
+                //    seriesView.Color = System.Drawing.ColorTranslator.FromHtml(legend.Color);
 
-                    chartControl.Series.Add(series);
-                }
+                //    chartControl.Series.Add(series);
+                //}
 
                 foreach (Series series in chartControl.Series)
                 {
@@ -604,9 +608,11 @@ namespace NMap
                 //diagram.AxisY.Range.SetMinMaxValues(0, Convert.ToInt32(_config.ScrollingRange) * _currentUnitList["FlawMapMD"].Conversion);
                 //diagram.AxisY.Range.ScrollingRange.SetMinMaxValues(0, Convert.ToInt32(_config.ScrollingRange) * _currentUnitList["FlawMapMD"].Conversion);
             }
-            //
-            //diagram.AxisX.Range.Auto = false;
-            //diagram.AxisX.Range.ScrollingRange.Auto = false;
+            else
+            {
+                diagram.AxisY.Range.Auto = true;
+                diagram.AxisY.Range.ScrollingRange.Auto = true;
+            }
 
         }
 
@@ -623,6 +629,35 @@ namespace NMap
 
             Settings setting = new Settings(_config);
             setting.ShowDialog();
+
+            if (chartControl.Series.Count > 0)
+            {
+                chartControl.Series.Clear();
+                // Add each legend to chart
+                foreach (var legend in _config.Legends)
+                {
+                    Series series = new Series(legend.Name, ViewType.Point);
+                    series.ArgumentScaleType = ScaleType.Numerical;
+                    series.ArgumentDataMember = "CD";
+                    series.ValueScaleType = ScaleType.Numerical;
+                    series.ValueDataMembers.AddRange(new string[] { "MD" });
+                    series.CrosshairEnabled = DevExpress.Utils.DefaultBoolean.False;
+
+                    PointSeriesView seriesView = (PointSeriesView)series.View;
+                    seriesView.PointMarkerOptions.Size = 15;
+                    seriesView.PointMarkerOptions.Kind = _dicSeriesShape[legend.Shape];
+                    seriesView.Color = System.Drawing.ColorTranslator.FromHtml(legend.Color);
+
+                    chartControl.Series.Add(series);
+                }
+
+                foreach (Series series in chartControl.Series)
+                {
+                    series.DataSource = QueryDataTable(_flawData, "FlawClass = '" + series.Name + "'", ""); ;
+                }
+
+                SetScrollingRange();
+            }
         }
 
         private void chartControl_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -651,5 +686,13 @@ namespace NMap
         }
 
         #endregion
+
+        private void chartControl_QueryCursor(object sender, QueryCursorEventArgs e)
+        {
+            if (e.CursorType == CursorType.Hand || e.CursorType == CursorType.Grab)
+            {
+                e.Cursor = Cursors.Default;
+            }
+        }
     }
 }

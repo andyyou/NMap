@@ -51,11 +51,11 @@
             this.chartControl.Size = new System.Drawing.Size(620, 793);
             this.chartControl.TabIndex = 0;
             this.chartControl.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.chartControl_MouseDoubleClick);
+            this.chartControl.QueryCursor += new DevExpress.XtraCharts.QueryCursorEventHandler(this.chartControl_QueryCursor);
             // 
             // btnSetting
             // 
             this.btnSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSetting.Enabled = false;
             this.btnSetting.Location = new System.Drawing.Point(560, 6);
             this.btnSetting.Name = "btnSetting";
             this.btnSetting.Size = new System.Drawing.Size(75, 29);
