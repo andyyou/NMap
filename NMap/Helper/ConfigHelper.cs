@@ -32,7 +32,7 @@ namespace NMap.Helper
             element.SetAttributeValue("GridColor", config.GridColor ?? "#AFAFAF");
             element.SetAttributeValue("XPrecision", config.XPrecision);
             element.SetAttributeValue("YPrecision", config.YPrecision);
-            element.SetAttributeValue("MapSize", config.MapSize ?? "");
+            element.SetAttributeValue("ScrollingRange", config.ScrollingRange ?? "");
             root.Add(element);
 
             foreach (var item in config.Legends)
@@ -80,7 +80,7 @@ namespace NMap.Helper
             config.GridColor = xmlMap.Attribute("GridColor") == null ? "#AFAFAF" : xmlMap.Attribute("GridColor").Value;
             config.XPrecision = xmlMap.Attribute("XPrecision") == null ? "0" : xmlMap.Attribute("XPrecision").Value;
             config.YPrecision = xmlMap.Attribute("YPrecision") == null ? "0" : xmlMap.Attribute("YPrecision").Value;
-            config.MapSize = xmlMap.Attribute("MapSize") == null ? "" : xmlMap.Attribute("MapSize").Value;
+            config.ScrollingRange = xmlMap.Attribute("ScrollingRange") == null ? "" : xmlMap.Attribute("ScrollingRange").Value;
 
             // Get legend setting
             foreach (var legend in xdoc.Root.Elements("Legend"))

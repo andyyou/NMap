@@ -30,6 +30,8 @@
         {
             this.btnClose = new System.Windows.Forms.Button();
             this.grbMapSettings = new System.Windows.Forms.GroupBox();
+            this.txtScrollingRange = new System.Windows.Forms.TextBox();
+            this.lblScrollingRange = new System.Windows.Forms.Label();
             this.txtYPrecision = new System.Windows.Forms.TextBox();
             this.lblYPrecision = new System.Windows.Forms.Label();
             this.txtXPrecision = new System.Windows.Forms.TextBox();
@@ -47,8 +49,6 @@
             this.gbSeriesSetting = new System.Windows.Forms.GroupBox();
             this.dgvFlawLegends = new System.Windows.Forms.DataGridView();
             this.btnSave = new System.Windows.Forms.Button();
-            this.lblMapSize = new System.Windows.Forms.Label();
-            this.txtMapSize = new System.Windows.Forms.TextBox();
             this.grbMapSettings.SuspendLayout();
             this.gbSeriesSetting.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFlawLegends)).BeginInit();
@@ -66,8 +66,8 @@
             // 
             // grbMapSettings
             // 
-            this.grbMapSettings.Controls.Add(this.txtMapSize);
-            this.grbMapSettings.Controls.Add(this.lblMapSize);
+            this.grbMapSettings.Controls.Add(this.txtScrollingRange);
+            this.grbMapSettings.Controls.Add(this.lblScrollingRange);
             this.grbMapSettings.Controls.Add(this.txtYPrecision);
             this.grbMapSettings.Controls.Add(this.lblYPrecision);
             this.grbMapSettings.Controls.Add(this.txtXPrecision);
@@ -88,6 +88,23 @@
             this.grbMapSettings.TabIndex = 0;
             this.grbMapSettings.TabStop = false;
             this.grbMapSettings.Text = "Map Setting";
+            // 
+            // txtScrollingRange
+            // 
+            this.txtScrollingRange.Location = new System.Drawing.Point(108, 91);
+            this.txtScrollingRange.MaxLength = 4;
+            this.txtScrollingRange.Name = "txtScrollingRange";
+            this.txtScrollingRange.Size = new System.Drawing.Size(33, 22);
+            this.txtScrollingRange.TabIndex = 15;
+            // 
+            // lblScrollingRange
+            // 
+            this.lblScrollingRange.AutoSize = true;
+            this.lblScrollingRange.Location = new System.Drawing.Point(10, 96);
+            this.lblScrollingRange.Name = "lblScrollingRange";
+            this.lblScrollingRange.Size = new System.Drawing.Size(92, 12);
+            this.lblScrollingRange.TabIndex = 14;
+            this.lblScrollingRange.Text = "Scrolling Range：";
             // 
             // txtYPrecision
             // 
@@ -257,23 +274,6 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // lblMapSize
-            // 
-            this.lblMapSize.AutoSize = true;
-            this.lblMapSize.Location = new System.Drawing.Point(10, 96);
-            this.lblMapSize.Name = "lblMapSize";
-            this.lblMapSize.Size = new System.Drawing.Size(60, 12);
-            this.lblMapSize.TabIndex = 14;
-            this.lblMapSize.Text = "Map Size：";
-            // 
-            // txtMapSize
-            // 
-            this.txtMapSize.Location = new System.Drawing.Point(73, 91);
-            this.txtMapSize.MaxLength = 4;
-            this.txtMapSize.Name = "txtMapSize";
-            this.txtMapSize.Size = new System.Drawing.Size(33, 22);
-            this.txtMapSize.TabIndex = 15;
-            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -316,7 +316,7 @@
         private System.Windows.Forms.TextBox txtXPrecision;
         private System.Windows.Forms.TextBox txtYPrecision;
         private System.Windows.Forms.Label lblYPrecision;
-        private System.Windows.Forms.TextBox txtMapSize;
-        private System.Windows.Forms.Label lblMapSize;
+        private System.Windows.Forms.TextBox txtScrollingRange;
+        private System.Windows.Forms.Label lblScrollingRange;
     }
 }
